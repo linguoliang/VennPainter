@@ -1,3 +1,3 @@
 VennPainter
 ===========
-hello every ones
+hello everyone!
