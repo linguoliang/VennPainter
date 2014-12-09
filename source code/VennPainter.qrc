@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="Bio.png">Images/bio.png</file>
+        <file alias="Open.png">Images/open.png</file>
+        <file alias="Save.png">Images/save.png</file>
+        <file alias="Settings.png">Images/settings.png</file>
+        <file alias="Zoom.png">Images/Zoom.png</file>
+        <file alias="Zoom_in.png">Images/Zoom_in.png</file>
+        <file alias="Zoom_out.png">Images/Zoom_out.png</file>
+        <file alias="Save_Image.png">Images/Save_Image.png</file>
+    </qresource>
+</RCC>
