@@ -1,9 +1,9 @@
-#Venn Painter User Manual
+#VennPainter User Manual
 ##1 Introduction
 ###1.1 Purpose
-This manual will introduce How to use Venn painter in detail.
+This manual will introduce How to use VennPainter in detail.
 ###1.2 Background
-Venn Diagram is diagram with a few closed curve to indicate the relationships among datasets, including intersection, sum, complement. In comparative genomics, they depict unique and shared sets of genes or gene families. Many programs can generate Venn diagrams, yet these come with many inconveniences, such as inefficiency, limited input, and memory-consumption. To provide a more comprehensive tool for genome research, we developed the program Venn Painter using a C++ in Qt framework.
+Venn Diagram is diagram with a few closed curve to indicate the relationships among datasets, including intersection, sum, complement. In comparative genomics, they depict unique and shared sets of genes or gene families. Many programs can generate Venn diagrams, yet these come with many inconveniences, such as inefficiency, limited input, and memory-consumption. To provide a more comprehensive tool for genome research, we developed the program VennPainter using a C++ in Qt framework.
 ##2 Application
 ###2.1 Function
 The main function of this software is to draw venn diagram based on the various datasets (including gene names, protein names, etc.), and export shared datasets. The software can run on windows, Linux and Mac OS.
