@@ -8,5 +8,9 @@
         <file alias="Zoom_in.png">Images/Zoom_in.png</file>
         <file alias="Zoom_out.png">Images/Zoom_out.png</file>
         <file alias="Save_Image.png">Images/Save_Image.png</file>
+        <file alias="venn.png">Images/venn.png</file>
+        <file alias="classic.png">Images/classic.png</file>
+        <file alias="edward.png">Images/edward.png</file>
+        <file>Images/qtlogo-64.png</file>
     </qresource>
 </RCC>

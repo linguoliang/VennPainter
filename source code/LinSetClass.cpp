@@ -2,10 +2,6 @@
 #include <string>
 setClass::setClass(){
     total = 0;
-    Top=-1;
-    RTop=-1;
-    stack[0]='\0';
-    Rstack[0]='\0';
     for (int i = 0; i < hashArrayMaxSize; i++)
     {
         hashItemArray[i] = NULL;
@@ -24,10 +20,6 @@ setClass::setClass(){
 setClass::setClass(QString fileList)
 {
     total = 0;
-    Top=-1;
-    RTop=-1;
-    stack[0]='\0';
-    Rstack[0]='\0';
     for (int i = 0; i < hashArrayMaxSize; i++)
     {
         hashItemArray[i] = NULL;
@@ -83,11 +75,15 @@ void setClass::traversal()
         return;
     }
     file >> item;
-    while (file.good())
+    while (!file.eof())
     {
         seq = BKDRHash(item.c_str());
         fillHashItemArray(seq, id, item);
         file >> item;
+    }
+    if(!item.empty()){
+        seq = BKDRHash(item.c_str());
+        fillHashItemArray(seq, id, item);
     }
     file.close();
 }
@@ -164,15 +160,13 @@ void setClass::statistica(int list){
 
 
 int setClass::addFile(QString fileList){
-    int state=0;
-    int pos=0;
-    std::string fileListstr,filename;
-     QByteArray ba = fileList.toLocal8Bit();
-    //fileListstr=fileList.toStdString();
+   int state=0;
+   int pos=0;
+   std::string fileListstr,filename;
+   QByteArray ba = fileList.toLocal8Bit();
    const char *tempfile;
    tempfile=ba;
    fileListstr=tempfile;
-    //tempfile=fileListstr.c_str();
    while ((pos=fileListstr.find_first_of('\r'))>=0) {
         filename=fileListstr.substr(0,fileListstr.find_first_of('\r'));
         fileListstr.erase(0,fileListstr.find_first_of('\r')+1);
@@ -191,7 +185,7 @@ int setClass::initFileIfo(const char *tempfile){
     int pos=0;
     total++;
     if(total>8){
-       QMessageBox::warning (NULL,QString("Warnings"),QString("You have loaded over 8 sets.It would be cleared all?"));
+       QMessageBox::warning (NULL,QString("Warnings"),QString("You have loaded over 8 sets.Supernumerary sets will be ignored?"));
         //
        state=OVERLOADFILE;
        total--;
@@ -200,7 +194,6 @@ int setClass::initFileIfo(const char *tempfile){
     Head[total-1]=new fileIfo;
     if(Head[total-1]==NULL){
         QMessageBox::critical(NULL,QString("Error"),QString("Can not allocate memory!"));
-        printf("Can not allocate memory!");
         state=ALLOCATEMEMORYFAILED;
         return state;
     }
@@ -219,7 +212,8 @@ int setClass::initFileIfo(const char *tempfile){
 
     pos=Head[total-1]->name.find_last_of('.');
     if(pos>=0){
-      Head[total-1]->name.erase(pos);
+        if(Head[total-1]->name.find(' ',pos)==-1)
+            Head[total-1]->name.erase(pos);
     }
 
     traversal();
@@ -259,6 +253,35 @@ int setClass::initFileIfo(const char *tempfile){
 
  }
 
+ //根据上一个transoutput函数反推出哪些item在list里，即将VennID转换成真正的ID
+ int setClass::findunit( int vennId, int list){
+     int tempList=0,trans=0,recordnoSelect[maxSamples+1];
+     //list=(list<<1)&0x7FFFFFFF;
+     for(int i=0,j=list,k=0,l=0;i<maxSamples+1;i++){//记录哪些set被选中
+         recordnoSelect[i]=INT_MAX;
+         if(!(k=j%2)){
+              recordnoSelect[l]=recordnoSelect[l]<<(i+1-l);
+              recordnoSelect[l]=recordnoSelect[l]&0x7FFFFFFF;
+                l++;
+         }
+         j=j/2;
+     }
+     for(int i=1,l=0;i<=list;i++){
+         if((tempList=i&list)){
+             l=tempList;
+             for(int j=0;j<total;j++){
+                  trans=trans+((INT_MAX-recordnoSelect[j])&l);
+                  l=(l&recordnoSelect[j])>>1;
+             }
+             if(vennId==trans){
+                 return tempList;
+             }
+             trans=0;
+         }
+     }
+     return 0;
+ }
+
 
  void setClass::exportsharesets(QString filename,int list){
   QByteArray  filenm=filename.toLocal8Bit();
@@ -267,7 +290,6 @@ int setClass::initFileIfo(const char *tempfile){
      file.open(filenm);
      if (file.fail())
      {
-        //std::cout << "Cannot open "<<filename.toStdString() << std::endl;
          QMessageBox::warning(NULL,"Error!","Cannot open the file!");
          return;
      }
@@ -311,63 +333,63 @@ int setClass::initFileIfo(const char *tempfile){
  void setClass::exportvertical(QString filename,int list)
  {
      QByteArray  filenm=filename.toLocal8Bit();
-        int tempList=0;
-        int Maxlin=0;
-        std::ofstream file;
-        file.open(filenm);
-        if (file.fail())
-        {
-           //std::cout << "Cannot open "<<filename.toStdString() << std::endl;
-            QMessageBox::warning(NULL,"Error!","Cannot open the File!");
-            return;
+    int tempList=0;
+    int Maxlin=0;
+    std::ofstream file;
+    file.open(filenm);
+    if (file.fail())
+    {
+        QMessageBox::warning(NULL,"Error!","Cannot open the File!");
+        return;
+    }
+    itemName *p;
+    for (int i = 1,k=0,l=0,pre=0; i <= list; i++)
+    {
+        if((tempList=i&list)){
+            if(tempList>pre){
+                pre=tempList;
+                l = tempList;
+                for (int j = 0; j < total; j++)
+                {
+                    if ((k = l % 2))
+                    {
+                        file << Head[j]->name << " ";
+                    }
+                    l = l / 2;
+                }
+                file <<"\t";
+              }
         }
-        itemName *p;
-        for (int i = 1,k=0,l=0,pre=0; i <= list; i++)
+    }
+    file << std::endl;
+    for(int i=1;i<shareSet;i++)
+    {
+        if(Maxlin<statistic[i])
         {
-            if((tempList=i&list)){
+            Maxlin=statistic[i];
+        }
+    }
+    for(int i=0;i<Maxlin;i++){
+        for(int j=0,pre=0;j<=list;j++){
+            tempList=j&list;
+            if(tempList)
+            {
                 if(tempList>pre){
                     pre=tempList;
-                    l = tempList;
-                    for (int j = 0; j < total; j++)
-                    {
-                        if ((k = l % 2))
-                        {
-                            file << Head[j]->name << " ";
-                        }
-                        l = l / 2;
+                    p=vertical[tempList];
+                    if(p){
+                        vertical[tempList]=vertical[tempList]->line;
+                        p->line=NULL;
+                        file<<p->item;
                     }
-                    file <<"\t";
+                    file<<"\t";
                   }
             }
         }
-            file << std::endl;
-            for(int i=1;i<shareSet;i++)
-            {
-                if(Maxlin<statistic[i])
-                {
-                    Maxlin=statistic[i];
-                }
-            }
-            for(int i=0;i<Maxlin;i++){
-                for(int j=0,pre=0;j<=list;j++){
-                    tempList=j&list;
-                    if(tempList)
-                    {
-                        if(tempList>pre){
-                            pre=tempList;
-                            p=vertical[tempList];
-                            if(p){
-                                vertical[tempList]=vertical[tempList]->line;
-                                p->line=NULL;
-                                file<<p->item;
-                            }
-                            file<<"\t";
-                          }
-                    }
-                }
-                file<<std::endl;
-            }
-        file.close();
+        file<<std::endl;
+    }
+    statistica(list);
+    file.close();
  }
 
  void setClass::exportMatrixs(QString filename,int list){
@@ -417,6 +439,9 @@ int setClass::initFileIfo(const char *tempfile){
          outPutHead[i]=NULL;
          delete Head[i];
      }
+     for(int i=0;i<shareSet;i++){
+         vertical[i]=NULL;
+     }
      for (int i = 0; i < hashArrayMaxSize; i++)
      {
          if (hashItemArray[i])
@@ -431,10 +456,6 @@ int setClass::initFileIfo(const char *tempfile){
          }
      }
      total = 0;
-     Top=-1;
-     RTop=-1;
-     stack[0]='\0';
-     Rstack[0]='\0';
      for (int i = 0; i < hashArrayMaxSize; i++)
      {
          hashItemArray[i] = NULL;

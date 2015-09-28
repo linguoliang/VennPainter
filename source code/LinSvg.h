@@ -6,7 +6,9 @@ class svg
 public:
 	svg();
 	~svg();
-    void flush(int total, int *p,fileIfo *Head[],int *color,QString temppath);
+    void flush(int total, int *p, fileIfo *Head[], int *color, QString temppath, int vennformat);
+    void flush2(int total, int *p, fileIfo *Head[], int *color, QString temppath, int vennformat);
+
 
 private:
     const char * head;

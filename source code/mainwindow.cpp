@@ -7,17 +7,21 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     temppath=QDir::tempPath();
-    temppath.append("/Linvenn.svg");
-    //QMessageBox::warning(this,"NI hao",temppath);
-    //ui->webView->load(QUrl("set_share\\venn.svg"));
     ui->webView->setContextMenuPolicy(Qt::ActionsContextMenu);
     List=new QList<QAction*>();
     ui->webView->installEventFilter(this);
-
-    zoom_out=new QAction(QIcon(":/Zoom_out.png"),"zoom out",ui->webView);
-    zoom_in=new QAction(QIcon(":/Zoom_in.png"),"zoom in",ui->webView);
-    reset=new QAction("reset",ui->webView);
-    save=new QAction(QIcon(":/Save_Image.png"),"save image",ui->webView);
+    ui->plainTextEdit->setReadOnly(true);
+    ui->plainTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
+    zoom_out=new QAction(QIcon(":/Zoom_out.png"),"Zoom out",ui->webView);
+    zoom_in=new QAction(QIcon(":/Zoom_in.png"),"Zoom in",ui->webView);
+    reset=new QAction("Reset",ui->webView);
+    save=new QAction(QIcon(":/Save_Image.png"),"Save image",ui->webView);
+    seprator=new QAction(ui->webView);
+    nest=new QAction(QIcon(":/venn.png"),"Nest Venn",ui->webView);
+    edwards=new QAction(QIcon(":/edward.png"),"Edward's Venn",ui->webView);
+    classic=new QAction(QIcon(":/classic.png"),"Classic Venn",ui->webView);
+    seprator->setSeparator(true);
     Zoom=new QCursor(QPixmap(":/Zoom.png"));
     major=new setClass();
     picture=new svg();
@@ -34,7 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     transcolor();
-
+    pagetmp=ui->webView->page();
+    pagetmp->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     //控件初始化
     qPushButton[0]=ui->pushButton;
     qPushButton[1]=ui->pushButton_2;
@@ -58,26 +63,41 @@ MainWindow::MainWindow(QWidget *parent) :
         qCheckBox[i]->setChecked(true);
     }
     ui->pushButton_9->setDisabled(true);
+    ui->pushButton_10->setDisabled(true);
     ui->actionSave_as_S->setDisabled(true);
     ui->actionSave_Imgage_I->setDisabled(true);
     ui->actionSave_color_palette->setDisabled(true);
     statisticList=0;
     Listnumber=0;
     outputfilename="output.svg";
-    for(int i=0;i<4;i++){
-        stat[0]=0;
-    }
 
     for(int i=0;i<8;i++){
         setbutcolor(i);
     }
-
+    pvennformat[0]=2;
+    pvennformat[1]=2;
+    pvennformat[2]=2;
+    pvennformat[3]=2;
+    pvennformat[4]=0;
+    pvennformat[5]=0;
+    pvennformat[6]=0;
+    pvennformat[7]=0;
+    selecId=0;
     List->append(zoom_out);
     List->append(zoom_in);
     List->append(reset);
     List->append(save);
-
-
+    List->append(seprator);
+    List->append(nest);
+    List->append(edwards);
+    List->append(classic);
+    zoom_in->setDisabled(true);
+    zoom_out->setDisabled(true);
+    reset->setDisabled(true);
+    save->setDisabled(true);
+    nest->setDisabled(true);
+    edwards->setDisabled(true);
+    classic->setDisabled(true);
     ui->webView->addActions(*List);
 
     //信号槽链接
@@ -88,6 +108,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(zoom_in,SIGNAL(triggered()),this,SLOT(Zoom_in()));
     connect(reset,SIGNAL(triggered()),this,SLOT(Reset()));
     connect(save,SIGNAL(triggered()),this,SLOT(Save_picture()));
+    connect(nest,SIGNAL(triggered()),this,SLOT(nest_stat()));
+    connect(edwards,SIGNAL(triggered()),this,SLOT(edwards_stat()));
+    connect(classic,SIGNAL(triggered()),this,SLOT(classic_stat()));
     connect(ui->pushButton_9,SIGNAL(clicked()),this,SLOT(Remove()));
     for(int i=0;i<8;i++){
         connect(qCheckBox[i],SIGNAL(clicked()),this,SLOT(Check_checkbox()));
@@ -104,6 +127,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(qPushButton[7],SIGNAL(clicked()),this,SLOT(ChangeColor8()));
     connect(ui->actionSave_color_palette,SIGNAL(triggered()),this,SLOT(Save_palette()));
     connect(ui->actionLoad_color_palette,SIGNAL(triggered()),this,SLOT(Load_palette()));
+    connect(ui->webView,SIGNAL(linkClicked(QUrl)),this,SLOT(singlecontent(QUrl)));
+    connect(ui->pushButton_10,SIGNAL(clicked()),this,SLOT(exportunit()));
+}
+
+void MainWindow::singlecontent(QUrl url){
+    int id;
+    id=url.toString().replace(QRegExp(".*[^0-9]"),"").toInt();
+    selecId=major->findunit(id,statisticList);
+    itemName *p;
+    p=major->vertical[selecId];
+    ui->plainTextEdit->clear();
+    while (p) {
+        ui->plainTextEdit->appendPlainText(p->item.c_str());
+        p=p->line;
+    }
+    ui->pushButton_10->setDisabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -123,16 +162,10 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::open(){
-    int state;
     fileName = QFileDialog::getOpenFileNames(this,tr("Open Files"),tr("/"));
     if(!fileName.empty()){
         fileList=fileName.join("\r");
-        state=major->addFile(fileList);
-        if(state<0)
-        {
-            Remove();
-            return;
-        }
+        major->addFile(fileList);
         for(int i=0;i<major->total;i++){
             qPushButton[i]->setDisabled(false);
             qCheckBox[i]->setDisabled(false);
@@ -149,39 +182,34 @@ void MainWindow::open(){
 void MainWindow::exportsharesets(){
     QString file1;
     int fm=0;
-    QFileDialog dialog(this,tr("Save File"),"",tr("Horizontal Form (*.hf);;Vertical Form (*.vf);;Matrix Form (*.mf)"));
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    if (dialog.exec()==QDialog::Accepted)
-    {
-        file1=dialog.selectedFiles().at(0);
-        if(dialog.selectedNameFilter().contains(".hf")){
-            if(!file1.endsWith(".hf"))
-                file1.append(".hf");
+//    QFileDialog dialog(this,tr("Save File"),"",tr("Horizontal Form (*.hf);;Vertical Form (*.vf);;Matrix Form (*.mf)"));
+//    dialog.setAcceptMode(QFileDialog::AcceptSave);
+//    if (dialog.exec()==QDialog::Accepted)
+//    {
+//        file1=dialog.selectedFiles().at(0);
+//        if(dialog.selectedNameFilter().contains(".hf")){
+//            if(!file1.endsWith(".hf"))
+//                file1.append(".hf");
+//            fm=1;
+//        }else if (dialog.selectedNameFilter().contains(".vf")) {
+//            if(!file1.endsWith(".vf"))
+//                file1.append(".vf");
+//            fm=2;
+//          }else {
+//             if(!file1.endsWith(".mf"))
+//                file1.append(".mf");
+//            fm=3;
+//          }
+    file1=QFileDialog::getSaveFileName(this,tr("Save File"),"",tr("Horizontal Form (*.hf);;Vertical Form (*.vf);;Matrix Form (*.mf)"));
+    if(!file1.isNull()){
+        if(file1.endsWith(".hf"))
             fm=1;
-        }else if (dialog.selectedNameFilter().contains(".vf")) {
-            if(!file1.endsWith(".vf"))
-                file1.append(".vf");
+        else if(file1.endsWith(".vf"))
             fm=2;
-          }else {
-             if(!file1.endsWith(".mf"))
-                file1.append(".mf");
+        else if(file1.endsWith(".mf"))
             fm=3;
-          }
-        QFile* temp=new QFile(file1);
-        if(temp->exists()){
-            QString mbs=file1;
-            mbs.append(" already exist.\n Do you want to replace it?");
-            if(QMessageBox::Yes==QMessageBox::warning(this,"Save File",mbs,QMessageBox::Yes,QMessageBox::No)){
-                if(!(temp->remove())){
-                    QMessageBox::critical(this,"Oops!","Can't Replace the File!",QMessageBox::Ok);
-                    delete temp;
-                    return;
-                }
-            }else {
-                return;
-            }
-        }
-        delete temp;
+        else
+            fm=2;
         switch (fm) {
         case 1:
             major->exportsharesets(file1,statisticList);
@@ -196,14 +224,12 @@ void MainWindow::exportsharesets(){
             break;
         }
     }
-    else{
-
-    }                     //点的是取消
 }
 
 void MainWindow::Zoom_out(){
     ui->webView->setZoomFactor(7*ui->webView->zoomFactor()/8);
 }
+
 
 void MainWindow::Zoom_in(){
     ui->webView->setZoomFactor(8*ui->webView->zoomFactor()/7);
@@ -229,7 +255,7 @@ void MainWindow::Save_picture(){
                 }
             }
             delete temp;
-            QFile::copy(temppath,file1);
+            QFile::copy(temppath+"/Linvenn.svg",file1);
             return;
         }
         else{
@@ -237,7 +263,8 @@ void MainWindow::Save_picture(){
         }                     //点的是取消
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)//重写eventFilter函数
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)//overwirte eventFilter function
  {
      if (obj == ui->webView) {
          if (event->type() == QEvent::Wheel) {
@@ -268,8 +295,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)//重写eventFilter函�
                          QKeyEvent *keyEvent=static_cast<QKeyEvent*>(event);
                          if(keyEvent->key()==Qt::Key_Control){
                              ui->webView->setCursor(Qt::ArrowCursor);
-                            // return true;
-                         }
+                         }                   
                      }
                  }
              }
@@ -281,7 +307,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)//重写eventFilter函�
      }
  }
 
-void MainWindow::wheelRolled(QWheelEvent *event)//放大缩小
+void MainWindow::wheelRolled(QWheelEvent *event)//zoom function
 {
 
     int z=event->delta();
@@ -313,8 +339,11 @@ void MainWindow::Generate(){//产生
             j++;
         }
     }
-    picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath);
-    ui->webView->load(QUrl(temppath));
+    init_formate(Listnumber,pvennformat[Listnumber-1]);
+    zoom_in->setDisabled(false);
+    zoom_out->setDisabled(false);
+    reset->setDisabled(false);
+    save->setDisabled(false);
 }
 
 
@@ -333,9 +362,8 @@ void MainWindow::Check_checkbox(){//检查有多少被选中，并将结果存�
     statisticList=list;
     Generate();
 }
-
 void MainWindow::about(){
-    QMessageBox::about(this,QString("CopyRight"),QString("\n\nVennPainter Version 1.0\n Based on Qt"));
+    QMessageBox::about(this,QString("CopyRight(C)"),QString("<html><head/><body><p><span style=\" font-weight:600;\">VennPainter V1.0 is a tool for drawing venn diagrams with </span><span style=\" font-weight:600; color:#ff0000;\">nest venn diagrams.</span><span style=\" font-weight:600; color:#000000;\"> It also provide classic venn and Edward's venn.</span></p><p><br/></p><p><span style=\" font-weight:600; color:#000000;\">Bug report:</span><a href=\"mailto:linguoliang1313@gmail.com\"><span style=\" text-decoration: underline; color:#0000ff;\">linguoliang1313@gmail.com</span></a></p></body></html>"));
 }
 
 void MainWindow::aboutQt(){
@@ -461,7 +489,8 @@ void MainWindow::reload(){
             j++;
         }
     }
-    picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath);
+    picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
      ui->webView->reload();
 }
 
@@ -477,7 +506,18 @@ void MainWindow::Remove(){
     }
     ui->actionSave_as_S->setDisabled(true);
     ui->actionSave_Imgage_I->setDisabled(true);
-
+    zoom_in->setDisabled(true);
+    zoom_out->setDisabled(true);
+    reset->setDisabled(true);
+    save->setDisabled(true);
+    nest->setDisabled(true);
+    edwards->setDisabled(true);
+    classic->setDisabled(true);
+    ui->pushButton_10->setDisabled(true);
+    FILE * p=fopen((temppath+"/Linvenn_v.svg").toLocal8Bit(),"w");
+    fclose(p);
+    ui->webView->reload();
+    ui->plainTextEdit->clear();
 }
 
 //存储配置文件
@@ -522,3 +562,126 @@ void MainWindow::Load_palette(){
     }
 }
 
+//检查状态更新
+void MainWindow::check_formatstate(){
+
+}
+
+//初始化venn_formate状态
+void MainWindow::init_formate(int ListNumber,int trigger_Id){
+    switch (ListNumber) {
+    case 1:
+        classic->setDisabled(false);
+        nest->setDisabled(true);
+        edwards->setDisabled(true);
+        break;
+    case 2:
+        nest->setDisabled(true);
+        classic->setDisabled(false);
+        edwards->setDisabled(false);
+        break;
+    case 3:
+        nest->setDisabled(true);
+        classic->setDisabled(false);
+        edwards->setDisabled(false);
+        break;
+    case 4:
+        nest->setDisabled(true);
+        classic->setDisabled(false);
+        edwards->setDisabled(false);
+        break;
+    case 5:
+        nest->setDisabled(false);
+        classic->setDisabled(false);
+        edwards->setDisabled(false);
+        break;
+    case 6:
+        nest->setDisabled(false);
+        classic->setDisabled(true);
+        edwards->setDisabled(false);
+        break;
+    default:
+        nest->setDisabled(false);
+        classic->setDisabled(true);
+        edwards->setDisabled(true);
+        break;
+    }
+    trigger_format(trigger_Id);
+}
+
+void MainWindow::nest_stat(){
+    nest->setIconVisibleInMenu(true);
+    classic->setIconVisibleInMenu(false);
+    edwards->setIconVisibleInMenu(false);
+    pvennformat[Listnumber-1]=0;
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
+    picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
+    ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+}
+
+void MainWindow::edwards_stat(){
+    edwards->setIconVisibleInMenu(true);
+    nest->setIconVisibleInMenu(false);
+    classic->setIconVisibleInMenu(false);
+    pvennformat[Listnumber-1]=1;
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
+    picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
+    ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+}
+
+void MainWindow::classic_stat(){
+    edwards->setIconVisibleInMenu(false);
+    nest->setIconVisibleInMenu(false);
+    classic->setIconVisibleInMenu(true);
+    pvennformat[Listnumber-1]=2;
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
+    picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
+    ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+}
+
+void MainWindow::trigger_format(int trigger_Id){
+    switch (trigger_Id) {
+    case 0:
+        nest->trigger();
+        break;
+    case 1:
+        edwards->trigger();
+        break;
+    case 2:
+        classic->trigger();
+    default:
+        break;
+    }
+}
+
+void MainWindow::exportunit(){
+    QString file1;
+    file1= QFileDialog::getSaveFileName(this,
+            tr("Save File"), "", tr("Text (*.txt);;All Files (*.*)"));
+
+        if (!file1.isNull())
+        {
+            QFile* temp=new QFile(file1);
+            if(temp->exists()){
+                if(!(temp->remove())){
+                    QMessageBox::critical(this,"Oops!","Can't Replace the File!",QMessageBox::Ok);
+                    delete temp;
+                    return;
+                }
+            }
+            delete temp;
+            FILE *p;
+            p=fopen(file1.toLocal8Bit(),"w");
+            itemName *q;
+            q=major->vertical[selecId];
+            while (q) {
+                fprintf(p,"%s\n",q->item.c_str());
+                q=q->line;
+            }
+            fclose(p);
+            return;
+        }
+        else{
+
+        }                     //点的是取消
+}

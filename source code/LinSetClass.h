@@ -17,6 +17,7 @@
 #include <QWheelEvent>
 #include <QMessageBox>
 #include <QtCore>
+#include <QPlainTextEdit>
 #include "returnvalues.h"
 const  int nameMaxSize = 256;
 const  int itemMaxSize = 256;
@@ -56,7 +57,7 @@ public:
     void Remove();
     void traversal(); // 遍历
     void statistica(int list=255);
-    char stack[stackMaxSize],Rstack[stackMaxSize];
+//    char stack[stackMaxSize],Rstack[stackMaxSize];
     int Top,RTop;
     int statistic[shareSet];//
     int outputStatistic[shareSet];
@@ -69,13 +70,14 @@ public:
     void exportsharesets(QString filename, int list);
     void exportMatrixs(QString filename,int list);
     void exportvertical(QString filename, int list);
+    int findunit(int vennId, int list);
+     itemName *vertical[shareSet];
 private:
 	itemName *hashItemArray[hashArrayMaxSize];
-    itemName *vertical[shareSet];
+
     unsigned int BKDRHash(const char *str);
     void fillHashItemArray(int seq, int id, std::string item);
     void transoutput();
-
 };
 
 #endif
