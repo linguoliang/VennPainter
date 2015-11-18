@@ -1,9 +1,4 @@
 <<<<<<< HEAD
-VennPainter
-===========
-hello everyone!
-VennPainter was developed in Qt 4.8.5
-=======
 #VennPainter User Manual
 ##1 Introduction
 ###1.1 Purpose
