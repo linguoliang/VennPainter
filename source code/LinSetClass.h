@@ -18,13 +18,14 @@
 #include <QMessageBox>
 #include <QtCore>
 #include <QPlainTextEdit>
-#include "returnvalues.h"
+#include "values.h"
 const  int nameMaxSize = 256;
 const  int itemMaxSize = 256;
 const  int hashArrayMaxSize = 240000;
 const  int shareSet = 256;
 const  int maxSamples = 8;
 const  int stackMaxSize=2048;
+const  int maxNonraph=31;
 struct fileIfo
 {
     std::string name;
@@ -62,8 +63,8 @@ public:
     int statistic[shareSet];//
     int outputStatistic[shareSet];
     int total ;
-	fileIfo *Head[maxSamples];
-    fileIfo *outPutHead[maxSamples];
+    fileIfo *Head[maxNonraph];
+    fileIfo *outPutHead[maxNonraph];
     int addFile(QString fileList);
     int initFileIfo(const char *tempfile);
     void transoutput(int list);
@@ -71,10 +72,9 @@ public:
     void exportMatrixs(QString filename,int list);
     void exportvertical(QString filename, int list);
     int findunit(int vennId, int list);
-     itemName *vertical[shareSet];
-private:
+    itemName *vertical[shareSet];
 	itemName *hashItemArray[hashArrayMaxSize];
-
+private:
     unsigned int BKDRHash(const char *str);
     void fillHashItemArray(int seq, int id, std::string item);
     void transoutput();

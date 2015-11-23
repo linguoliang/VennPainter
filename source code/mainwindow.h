@@ -9,7 +9,7 @@
 #include <QPoint>
 #include <QWebPage>
 #include <QUrl>
-#include "returnvalues.h"
+#include "values.h"
 
 
 namespace Ui {
@@ -33,6 +33,7 @@ private slots:
     void nest_stat();
     void edwards_stat();
     void classic_stat();
+    void matrix_state();
     void Generate();
     void Remove();
     void Check_checkbox();
@@ -56,12 +57,14 @@ public:
 
 private:
     void init_formate(int ListNumber, int trigger_Id);
-    void check_formatstate();
+    void setdisable(int tmp=0);
     void transcolor();
     void setbutcolor(int i);
     void reload();
     void setformat();
     void trigger_format(int );
+    void setvennstate(int );
+    void setVennIcon(int );
     QWebPage *pagetmp;
     Ui::MainWindow *ui;
     QAction *zoom_out,*zoom_in,*reset,*save,*seprator,*nest,*edwards,*classic;
@@ -85,8 +88,8 @@ private:
     int Listnumber;//被选中的元素个数
     int Color[8],FColor[8];
     QPalette bkgrd[8];
-//0 for nested Venn, 1 for edward's Venn, 2 for normal
-    int pvennformat[8];
+//0 for nested Venn, 1 for edward's Venn, 2 for normal, 3 for matrix
+    int pvennformat[maxNonraph];
     int selecId;
 };
 

@@ -12,7 +12,7 @@ setClass::setClass(){
         outputStatistic[i]=0;
         vertical[i]=NULL;
     }
-    for(int i=0;i<maxSamples;i++){
+    for(int i=0;i<maxNonraph;i++){
         Head[i]=NULL;
         outPutHead[i]=NULL;
     }
@@ -30,7 +30,7 @@ setClass::setClass(QString fileList)
         outputStatistic[i]=0;
         vertical[i]=NULL;
     }
-    for(int i=0;i<maxSamples;i++){
+    for(int i=0;i<maxNonraph;i++){
         Head[i]=NULL;
         outPutHead[i]=NULL;
     }
@@ -59,7 +59,7 @@ setClass::~setClass()
 	}
 }
 
-//遍历文件
+//Traverse the latest file
 void setClass::traversal()
 {
 	int id=0,seq=0;
@@ -92,7 +92,7 @@ void setClass::traversal()
 // Hash Function
 unsigned int setClass::BKDRHash(const char *item)
 {
-	unsigned int seed = 1137; // 31 131 1313 13131 131313 etc..
+    unsigned int seed = 2531; // modify seed to a primate 2531
 	unsigned int hash = 0;
 
 	while (*item)
@@ -115,19 +115,20 @@ void setClass::fillHashItemArray(int seq, int id, std::string item)
             p=p->next;
         }
         else{
-            if (!((1<<(id-1))&(p->list)))//ȥ��
+            if (!((1<<(id-1))&(p->list)))//if item already exists add file info to list
             {
                 p->list = p->list + (1 << (id - 1));
             }
             return;
         }
     }
-    hashItemArray[seq]=new itemName;//����ھ����½��һ��
+    hashItemArray[seq]=new itemName;//if can not find item in the hashtable new one
     hashItemArray[seq]->item=item;
     hashItemArray[seq]->list = hashItemArray[seq]->list + (1 << (id - 1));
     hashItemArray[seq]->next=q;
 } 
 
+//census selected lists
 void setClass::statistica(int list){
     for(int i=0;i<shareSet;i++){
         statistic[i]=0;
@@ -158,12 +159,12 @@ void setClass::statistica(int list){
 	}
 }
 
-
+// addFile and trim the file name from full path
 int setClass::addFile(QString fileList){
    int state=0;
    int pos=0;
    std::string fileListstr,filename;
-   QByteArray ba = fileList.toLocal8Bit();
+   QByteArray ba = fileList.toLocal8Bit(); // using local encode to avoid errors
    const char *tempfile;
    tempfile=ba;
    fileListstr=tempfile;
@@ -180,12 +181,24 @@ int setClass::addFile(QString fileList){
     return state;
 }
 
+// stores fileInfo with Head array
 int setClass::initFileIfo(const char *tempfile){
     int state=0;//
     int pos=0;
+    int flag;
     total++;
-    if(total>8){
-       QMessageBox::warning (NULL,QString("Warnings"),QString("You have loaded over 8 sets.Supernumerary sets will be ignored?"));
+    if(total>maxSamples&&total<10){
+
+       flag=QMessageBox::question(NULL,QString("Warnings"),QString("You have loaded over 8 sets.Swith to Matrix From!"),QMessageBox::Yes,QMessageBox::No);
+       if(flag==QMessageBox::No){
+           total--;
+           state=EIGHTONLY;
+           return state;
+           }
+    }
+    if(total>maxNonraph){
+
+       QMessageBox::warning (NULL,QString("Warnings"),QString("You have loaded over 31 sets.Supernumerary sets will be ignored?"),QMessageBox::Ok);
         //
        state=OVERLOADFILE;
        total--;
@@ -212,7 +225,7 @@ int setClass::initFileIfo(const char *tempfile){
 
     pos=Head[total-1]->name.find_last_of('.');
     if(pos>=0){
-        if(Head[total-1]->name.find(' ',pos)==-1)
+        if(Head[total-1]->name.find(' ',pos)==std::string::npos)
             Head[total-1]->name.erase(pos);
     }
 
@@ -221,9 +234,9 @@ int setClass::initFileIfo(const char *tempfile){
 }
 
  void setClass::transoutput(int list){//将不标准的格式转换成linSvg的标准输出格式
-     int tempList=0,trans=0,recordnoSelect[maxSamples+1];
+     int tempList=0,trans=0,recordnoSelect[maxNonraph+1];
      //list=(list<<1)&0x7FFFFFFF;
-     for(int i=0,j=list,k=0,l=0,m=0;i<maxSamples+1;i++){//记录哪些set被选中
+     for(int i=0,j=list,k=0,l=0,m=0;i<maxNonraph+1;i++){//记录哪些set被选中
          recordnoSelect[i]=INT_MAX;
          if(!(k=j%2)){
               recordnoSelect[l]=recordnoSelect[l]<<(i+1-l);
@@ -231,7 +244,7 @@ int setClass::initFileIfo(const char *tempfile){
                 l++;
          }
          else {
-             if(m<maxSamples){
+             if(m<maxNonraph){
                  outPutHead[m]=Head[i];
                  m++;
              }
@@ -255,9 +268,9 @@ int setClass::initFileIfo(const char *tempfile){
 
  //根据上一个transoutput函数反推出哪些item在list里，即将VennID转换成真正的ID
  int setClass::findunit( int vennId, int list){
-     int tempList=0,trans=0,recordnoSelect[maxSamples+1];
+     int tempList=0,trans=0,recordnoSelect[maxNonraph+1];
      //list=(list<<1)&0x7FFFFFFF;
-     for(int i=0,j=list,k=0,l=0;i<maxSamples+1;i++){//记录哪些set被选中
+     for(int i=0,j=list,k=0,l=0;i<maxNonraph+1;i++){//记录哪些set被选中
          recordnoSelect[i]=INT_MAX;
          if(!(k=j%2)){
               recordnoSelect[l]=recordnoSelect[l]<<(i+1-l);
@@ -401,7 +414,7 @@ int setClass::initFileIfo(const char *tempfile){
           QMessageBox::warning(NULL,"Error!","Cannot open the File!");
           return;
         }
-      for(int j=0;j<8;j++){
+      for(int j=0;j<maxNonraph;j++){
           if(((1<<j)&list)){
               fprintf(file,"\t%s",Head[j]->name.c_str());
             }
@@ -415,7 +428,7 @@ int setClass::initFileIfo(const char *tempfile){
                 tempList=((p->list)&list);
                 if(tempList){
                     fprintf(file,"%s",p->item.c_str());
-                   for(int j=0;j<8;j++){
+                   for(int j=0;j<maxNonraph;j++){
                        if(((1<<j)&list)){
                            if(tempList&(1<<j)){
                                 fprintf(file,"\t%d",1);
@@ -465,7 +478,7 @@ int setClass::initFileIfo(const char *tempfile){
          statistic[i] = 0;
          outputStatistic[i]=0;
      }
-     for(int i=0;i<maxSamples;i++){
+     for(int i=0;i<maxNonraph;i++){
          Head[i]=NULL;
          outPutHead[i]=NULL;
      }

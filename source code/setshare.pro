@@ -20,7 +20,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     LinSetClass.h \
     LinSvg.h \
-    returnvalues.h
+    values.h
 
 FORMS    += mainwindow.ui
 

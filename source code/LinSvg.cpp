@@ -231,19 +231,19 @@ void svg::flush(int total, int *p, fileIfo *Head[], int *color, QString temppath
             fprintf(file,"<path fill=\"#%06X\" fill-opacity=\"0.5\" d=\"M14.18-10.681c0,7.212-5.846,13.058-13.058,13.058S-11.936-3.47-11.936-10.682S-6.089-23.74,1.122-23.74c7.207,0,13.05,5.839,13.058,13.045\"/>\n",color[4]);
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 37.5931 152.1423)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[1]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 37.5931 152.1423)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[0]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 397.5569 43.8668)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[2]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 397.5569 43.8668)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[1]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 540.4426 152.1422)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[3]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 540.4426 152.1422)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[2]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 478.1419 552.139)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[4]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 478.1419 552.139)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[3]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 82.4123 545.3763)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[5]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 82.4123 545.3763)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[4]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<text transform=\"matrix(1 0 0 1 102.0002 202)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"12\">%d</text>\n",p[1]);
             fprintf(file,"<text transform=\"matrix(1 0 0 1 325.0003 69)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"12\">%d</text>\n",p[2]);
@@ -1135,6 +1135,29 @@ void svg::flush(int total, int *p, fileIfo *Head[], int *color, QString temppath
 		fclose(file);
 		break;
 	default:
+        if(total>8){
+            file=fopen(temppath.toLocal8Bit(),"w");
+            if(!file){
+               QMessageBox::critical(NULL,QString("Error"),QString("Can not create output file"));
+               return;
+            }
+            fprintf(file,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+            fprintf(file,"<html>\n");
+            fprintf(file,"<head>\n");
+            fprintf(file,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
+            fprintf(file,"<title>For Maxtrix</title>\n");
+            fprintf(file,"</head>\n");
+            fprintf(file,"<body>\n");
+            fprintf(file,"<h1 style=\"text-align: center\">Matrix ( without Diagrams )</h1>\n");
+            fprintf(file,"<span style=\"font-size: 24px\">There is no diagram for more than 8 sets, but you can still export matrix formate and export the shared datasets. <br></span>\n");
+            fprintf(file,"<span style=\"font-size: 24px;\">You have loaded n datasets as follow:<br></span>\n");
+            for(int i=0;i<total;i++){
+                fprintf(file,"<span style=\"color: #F00; font-size: 24px;\">&nbsp;&nbsp;&nbsp;&nbsp;%d. %s<br></span>\n",i+1,Head[i]->name.c_str());
+            }
+            fprintf(file,"</body>\n");
+            fprintf(file,"</html>\n");
+            fclose(file);
+        }
 		break;
 	}
 }
@@ -1360,19 +1383,19 @@ void svg::flush2(int total, int *p, fileIfo *Head[], int *color, QString temppat
             fprintf(file,"<path fill=\"#%06X\" fill-opacity=\"0.5\" d=\"M14.18-10.681c0,7.212-5.846,13.058-13.058,13.058S-11.936-3.47-11.936-10.682S-6.089-23.74,1.122-23.74c7.207,0,13.05,5.839,13.058,13.045\"/>\n",color[4]);
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 37.5931 152.1423)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[1]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 37.5931 152.1423)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[0]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 397.5569 43.8668)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[2]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 397.5569 43.8668)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[1]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 540.4426 152.1422)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[3]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 540.4426 152.1422)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[2]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 478.1419 552.139)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[4]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 478.1419 552.139)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[3]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<g enable-background=\"new    \">\n");
-            fprintf(file,"<text transform=\"matrix(1 0 0 1 82.4123 545.3763)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[5]->name.c_str());
+            fprintf(file,"<text transform=\"matrix(1 0 0 1 82.4123 545.3763)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"18\">%s</text>\n",Head[4]->name.c_str());
             fprintf(file,"</g>\n");
             fprintf(file,"<a xlink:href=\"1\"><text onmouseover=\"text_clicked(evt)\" onmouseout=\"text_focusout(evt)\" transform=\"matrix(1 0 0 1 102.0002 202)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"12\">%d</text></a>\n",p[1]);
             fprintf(file,"<a xlink:href=\"2\"><text onmouseover=\"text_clicked(evt)\" onmouseout=\"text_focusout(evt)\" transform=\"matrix(1 0 0 1 325.0003 69)\" font-family=\"Arial\" text-anchor=\"middle\" font-size=\"12\">%d</text></a>\n",p[2]);
@@ -2267,6 +2290,12 @@ void svg::flush2(int total, int *p, fileIfo *Head[], int *color, QString temppat
         fclose(file);
         break;
     default:
+        file = fopen(temppath.toLocal8Bit(), "w");
+        if(!file){
+            //std::cerr << "锟侥硷拷锟津开达拷锟襟！筹拷锟斤拷锟斤拷锟剿筹拷" << std::endl;
+            QMessageBox::critical(NULL,QString("Error!"),QString("Can not create output file!"));
+            return;
+        }
         break;
     }
 }

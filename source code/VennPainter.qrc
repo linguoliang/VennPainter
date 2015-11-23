@@ -12,5 +12,6 @@
         <file alias="classic.png">Images/classic.png</file>
         <file alias="edward.png">Images/edward.png</file>
         <file>Images/qtlogo-64.png</file>
+        <file alias="reset.png">Images/reset.png</file>
     </qresource>
 </RCC>
