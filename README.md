@@ -6,15 +6,16 @@ This manual will introduce How to use VennPainter in detail.
 Venn Diagram is diagram with a few closed curve to indicate the relationships among datasets, including intersection, sum, complement. In comparative genomics, they depict unique and shared sets of genes or gene families. Many programs can generate Venn diagrams, yet these come with many inconveniences, such as inefficiency, limited input, and memory-consumption. To provide a more comprehensive tool for genome research, we developed the program VennPainter using a C++ in Qt framework.
 ##2 Application
 ###2.1 Function
-The main function of this software is to draw venn diagram based on the various datasets (including gene names, protein names, etc.), and export shared datasets. The software can run on windows, Linux and Mac OS.
+The main function of this software is to draw Venn diagram based on the various datasets (including gene names, protein names, etc.), and export shared datasets. VennPainter provides Classic Venn, Edwards’ Venn and Nested Venn. The Maximum datasets are 8 in graph and 31 in Matrix. The software can run on windows, Linux and Mac OS.
 ####2.1.1. Paint module
-Paint module draws Venn diagrams according to input dataset. Venn diagrams are automatically generated after loading the data. There are some operations to modify Venn diagram. Eight checkboxes and nine buttons, including eight ‘color-choice’ and a ‘remove’ buttons make user easier to modify venn diagram.
+Paint module draws Venn diagrams according to input dataset. Venn diagrams are automatically generated after loading the data. There are some operations to modify Venn diagram. Eight checkboxes and ten buttons, including eight ‘color’ button, ‘remove’ button and a ‘export’ button make user easier to modify venn diagram(Fig. 1).
 
-Users can use ‘color-choice’ to change set’s color, and use checkboxes to change the number of sets.
+Users can use ‘color’ button to change set’s color, and use checkboxes to change the number of sets.
+
  
 ![Color Selection Dialog](PNGfigures/ColorSelectionDialog.png) 
 
-Color Selection Dialog
+Fig.1 Color Selection Dialog
 
 Users can use save and load configure file through ‘Setting->Load config’ and ‘Setting->Save config’. The configure file only contains the color patterns ,at present.
  
