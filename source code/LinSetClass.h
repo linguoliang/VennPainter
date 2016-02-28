@@ -62,6 +62,7 @@ public:
     int Top,RTop;
     int statistic[shareSet];//
     int outputStatistic[shareSet];
+    std::string outputstring[shareSet];
     int total ;
     fileIfo *Head[maxNonraph];
     fileIfo *outPutHead[maxNonraph];
