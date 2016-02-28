@@ -24,6 +24,7 @@ protected:
     void wheelRolled(QWheelEvent *event);
 
 private slots:
+    void help();
     void singlecontent(QUrl url);
     void open();
     void Zoom_out();
@@ -65,6 +66,7 @@ private:
     void trigger_format(int );
     void setvennstate(int );
     void setVennIcon(int );
+    QString file_path;
     QWebPage *pagetmp;
     Ui::MainWindow *ui;
     QAction *zoom_out,*zoom_in,*reset,*save,*seprator,*nest,*edwards,*classic;
@@ -84,6 +86,7 @@ private:
     QPushButton  *qPushButton[8];//颜色选取元件
     QCheckBox *qCheckBox[8];
     svg *picture;//画图元件
+    int states;
     int statisticList;//被选中的元素
     int Listnumber;//被选中的元素个数
     int Color[8],FColor[8];

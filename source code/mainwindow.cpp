@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+//#include <QDebug> //for debug
+//#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -7,15 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     temppath=QDir::tempPath();
+    file_path=QDir::currentPath();
     ui->webView->setContextMenuPolicy(Qt::ActionsContextMenu);
-    List=new QList<QAction*>();
     ui->webView->installEventFilter(this);
     ui->plainTextEdit->setReadOnly(true);
     ui->plainTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
+    try{
+    List=new QList<QAction*>();
     zoom_out=new QAction(QIcon(":/Zoom_out.png"),"Zoom out",ui->webView);
     zoom_in=new QAction(QIcon(":/Zoom_in.png"),"Zoom in",ui->webView);
-    reset=new QAction(QIcon(":/reset.png"),"Reset",ui->webView);
+    reset=new QAction(QIcon(":/reset.png"),"Reset scale",ui->webView);
     save=new QAction(QIcon(":/Save_Image.png"),"Save image",ui->webView);
     seprator=new QAction(ui->webView);
     nest=new QAction(QIcon(":/venn.png"),"Nest Venn",ui->webView);
@@ -33,6 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
     tempqColor[2]=new QColor(0x36,0xA6,0xDF,0xEF);
     tempqColor[1]=new QColor(0x68,0xB8,0x2E,0xEF);
     tempqColor[0]=new QColor(0xF3,0xEB,0x34,0xEF);
+    }
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     for(int i=0;i<8;i++){
         qColor[i]=*tempqColor[i];
     }
@@ -59,14 +68,27 @@ MainWindow::MainWindow(QWidget *parent) :
     qCheckBox[7]=ui->checkBox_8;
     for(int i=0;i<8;i++){
         qPushButton[i]->setDisabled(true);
+        qPushButton[i]->setVisible(false);
         qCheckBox[i]->setDisabled(true);
-        qCheckBox[i]->setChecked(true);
+        qCheckBox[i]->setChecked(false);
+        qCheckBox[i]->setVisible(false);
     }
+    //set widget invisible
+    ui->groupBox->setVisible(false);
+    ui->label->setVisible(false);
+    ui->plainTextEdit->setVisible(false);
+//    ui->groupBox->setMinimumWidth(0);
+//    ui->groupBox->setMaximumWidth(0);
     ui->pushButton_9->setDisabled(true);
+    ui->pushButton_9->setVisible(false);
     ui->pushButton_10->setDisabled(true);
+    ui->pushButton_10->setVisible(false);
     ui->actionSave_as_S->setDisabled(true);
     ui->actionSave_Imgage_I->setDisabled(true);
     ui->actionSave_color_palette->setDisabled(true);
+    ui->label->setMaximumWidth(172);
+    ui->label->adjustSize();
+    ui->label->setWordWrap(true);
     statisticList=0;
     Listnumber=0;
     outputfilename="output.svg";
@@ -131,21 +153,34 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSave_color_palette,SIGNAL(triggered()),this,SLOT(Save_palette()));
     connect(ui->actionLoad_color_palette,SIGNAL(triggered()),this,SLOT(Load_palette()));
     connect(ui->webView,SIGNAL(linkClicked(QUrl)),this,SLOT(singlecontent(QUrl)));
+    connect(ui->actionHelp_F1,SIGNAL(triggered()),this,SLOT(help()));
+//    connect(ui->webView,SIGNAL(urlChanged(QUrl)),this,SLOT(singlecontent(QUrl)));
     connect(ui->pushButton_10,SIGNAL(clicked()),this,SLOT(exportunit()));
+    ui->webView->load(QUrl(QString("Sample_workflow.html")));
+    states=0;
 }
 
 void MainWindow::singlecontent(QUrl url){
     int id;
-    id=url.toString().replace(QRegExp(".*[^0-9]"),"").toInt();
-    selecId=major->findunit(id,statisticList);
-    itemName *p;
-    p=major->vertical[selecId];
-    ui->plainTextEdit->clear();
-    while (p) {
-        ui->plainTextEdit->appendPlainText(p->item.c_str());
-        p=p->line;
+    if(url.toString().contains(QString("html"))){
+        ui->webView->load(url);
+    }else{
+        id=url.toString().replace(QRegExp(".*[^0-9]"),"").toInt();
+        selecId=major->findunit(id,statisticList);
+        itemName *p;
+        p=major->vertical[selecId];
+        ui->plainTextEdit->clear();
+        while (p) {
+            ui->plainTextEdit->appendPlainText(p->item.c_str());
+            p=p->line;
+        }
+        ui->label->setVisible(true);
+        ui->plainTextEdit->setVisible(true);
+        ui->pushButton_10->setVisible(true);
+        ui->pushButton_10->setDisabled(false);
+        ui->label->setToolTip(QString(major->outputstring[id].c_str()));
+        ui->plainTextEdit->setToolTip("click 'Export shared list' button to export shared list");
     }
-    ui->pushButton_10->setDisabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -165,35 +200,47 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::open(){//
-    fileName = QFileDialog::getOpenFileNames(this,tr("Open Files"),tr("/"));
+    fileName = QFileDialog::getOpenFileNames(this,tr("Open Files"),file_path);
+//    QTime time;
+//    time.start();
     if(!fileName.empty()){
+        file_path=fileName[0];
+        file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
         fileList=fileName.join("\r");
         major->addFile(fileList);
         if(major->total<9)
         for(int i=0;i<major->total;i++){//init buttoms
             qPushButton[i]->setDisabled(false);
+            qPushButton[i]->setVisible(true);
             qCheckBox[i]->setDisabled(false);
+            qCheckBox[i]->setVisible(true);
+            qCheckBox[i]->setChecked(true);
             qCheckBox[i]->setText(major->Head[i]->name.c_str());
         }
         Check_checkbox();
         if(major->total<9){
             ui->actionSave_Imgage_I->setDisabled(false);
             ui->pushButton_9->setDisabled(false);
+            ui->pushButton_9->setVisible(true);
         }
+        ui->groupBox->setVisible(true);
         ui->actionSave_as_S->setDisabled(false);
         ui->actionExport_shared_sets->setDisabled(false);
     }
+//    qDebug()<<time.elapsed()<<"ms";
 }
 
 void MainWindow::exportsharesets(){
     QString file1;
     int fm=0;
     if(major->total>8)
-        file1=QFileDialog::getSaveFileName(this,tr("Save File"),"",tr("Matrix Form (*.mf)"),NULL,QFileDialog::HideNameFilterDetails);
+        file1=QFileDialog::getSaveFileName(this,tr("Save File"),file_path+"/untitled",tr("Matrix Form (*.mf)"),NULL,QFileDialog::HideNameFilterDetails);
     else {
-        file1=QFileDialog::getSaveFileName(this,tr("Save File"),"",tr("Matrix Form (*.mf);;Vertical Form (*.vf);;Horizontal Form (*.hf)"),NULL,QFileDialog::HideNameFilterDetails);
+        file1=QFileDialog::getSaveFileName(this,tr("Save File"),file_path+"/untitled",tr("Matrix Form (*.mf);;Vertical Form (*.vf);;Horizontal Form (*.hf)"),NULL,QFileDialog::HideNameFilterDetails);
     }
     if(!file1.isNull()){
+        file_path=file1;
+        file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
         if(file1.endsWith(".hf"))
             fm=3;
         else if(file1.endsWith(".vf"))
@@ -234,10 +281,12 @@ void MainWindow::Reset(){
 void MainWindow::Save_picture(){
     QString file1;
     file1= QFileDialog::getSaveFileName(this,
-            tr("Save File"), "", tr("Scalable Vector Graphics (*.svg)"),NULL,QFileDialog::HideNameFilterDetails);
+            tr("Save File"),file_path+"/untitled", tr("Scalable Vector Graphics (*.svg)"),NULL,QFileDialog::HideNameFilterDetails);
 
         if (!file1.isNull())
         {
+            file_path=file1;
+            file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
             QFile* temp=new QFile(file1);
             if(temp->exists()){
                 if(!(temp->remove())){
@@ -273,6 +322,12 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)//overwirte eventFilter
                  QKeyEvent *keyEvent=static_cast<QKeyEvent*>(event);
                  if(keyEvent->modifiers()==Qt::ControlModifier){
                      ui->webView->setCursor(*Zoom);
+                 }else{if(keyEvent->matches(QKeySequence::Back))
+                         return true;
+                     else if(keyEvent->key()==Qt::Key_F1){
+                         help();
+                         return true;
+                     }
                  }
              }
              else {
@@ -294,10 +349,17 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)//overwirte eventFilter
              return false;
          }
      } else {
+             if(event->type()==QEvent::KeyPress){
+                 QKeyEvent *keyEvent=static_cast<QKeyEvent*>(event);
+                 if(keyEvent->key()==Qt::Key_F1){
+                    help();
+                    return true;
+             }}
          // pass the event on to the parent class
          return QMainWindow::eventFilter(obj, event);
-     }
+
  }
+}
 
 void MainWindow::wheelRolled(QWheelEvent *event)//zoom function
 {
@@ -321,7 +383,7 @@ void MainWindow::wheelRolled(QWheelEvent *event)//zoom function
     }
 }
 
-void MainWindow::   Generate(){//产生
+void MainWindow::Generate(){//产生
     if(major->total<9){
         major->statistica(statisticList);
         major->transoutput(statisticList);
@@ -350,9 +412,14 @@ void MainWindow::Check_checkbox(){//检查有多少被选中，并将结果存�
                 list=list+(1<<i);
                 Listnumber++;
                 qPushButton[i]->setEnabled(true);
+                setbutcolor(i);
+                qPushButton[i]->setToolTip(("Change "+major->Head[i]->name+"'s Color").c_str());
             }
-            else
+            else{
                 qPushButton[i]->setDisabled(true);
+                qPushButton[i]->setStyleSheet("background-color:#F0F0F0");
+                qPushButton[i]->setToolTip("");
+        }
         }
     }
     else {
@@ -377,7 +444,12 @@ void MainWindow::aboutQt(){
 }
 
 void MainWindow::ChangeColor1(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+        qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[0]=qColorDialog->selectedColor();
         bkgrd[0]=qPushButton[0]->palette();
@@ -390,7 +462,12 @@ void MainWindow::ChangeColor1(){
 
 
 void MainWindow::ChangeColor2(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+        qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[1]=qColorDialog->selectedColor();
         setbutcolor(1);
@@ -401,7 +478,12 @@ void MainWindow::ChangeColor2(){
 }
 
 void MainWindow::ChangeColor3(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+        qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[2]=qColorDialog->selectedColor();
         setbutcolor(2);
@@ -412,7 +494,12 @@ void MainWindow::ChangeColor3(){
 }
 
 void MainWindow::ChangeColor4(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+        qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[3]=qColorDialog->selectedColor();
         setbutcolor(3);
@@ -423,7 +510,12 @@ void MainWindow::ChangeColor4(){
 }
 
 void MainWindow::ChangeColor5(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+        qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[4]=qColorDialog->selectedColor();
         setbutcolor(4);
@@ -434,7 +526,12 @@ void MainWindow::ChangeColor5(){
 }
 
 void MainWindow::ChangeColor6(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+    qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[5]=qColorDialog->selectedColor();
         setbutcolor(5);
@@ -445,7 +542,12 @@ void MainWindow::ChangeColor6(){
 }
 
 void MainWindow::ChangeColor7(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+        qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[6]=qColorDialog->selectedColor();
         setbutcolor(6);
@@ -456,7 +558,12 @@ void MainWindow::ChangeColor7(){
 }
 
 void MainWindow::ChangeColor8(){
-    qColorDialog=new QColorDialog(Qt::white, this);
+    try{
+    qColorDialog=new QColorDialog(Qt::white, this);}
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(this,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     if(qColorDialog->exec()==QDialog::Accepted){
         qColor[7]=qColorDialog->selectedColor();
         setbutcolor(7);
@@ -496,8 +603,9 @@ void MainWindow::reload(){
         }
     }
     picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
-    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
-     ui->webView->reload();
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1],major->outputstring);
+    ui->webView->reload();
+    states=1;
 }
 
 //清除载入的数据
@@ -509,13 +617,34 @@ void MainWindow::Remove(){
     FILE * p=fopen((temppath+"/Linvenn_v.svg").toLocal8Bit(),"w");
     fclose(p);
     ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+    ui->webView->load(QUrl(QString("Sample_workflow.html")));
     ui->plainTextEdit->clear();
+    //set very thing invisible
+    for(int i=0;i<8;i++){
+        qPushButton[i]->setDisabled(true);
+        qPushButton[i]->setVisible(false);
+        qCheckBox[i]->setDisabled(true);
+        qCheckBox[i]->setChecked(false);
+        qCheckBox[i]->setVisible(false);
+    }
+    //set widget invisible
+    ui->groupBox->setVisible(false);
+    ui->label->setVisible(false);
+    ui->plainTextEdit->setVisible(false);
+//    ui->groupBox->setMinimumWidth(0);
+//    ui->groupBox->setMaximumWidth(0);
+    ui->pushButton_9->setDisabled(true);
+    ui->pushButton_9->setVisible(false);
+    ui->pushButton_10->setDisabled(true);
+    ui->pushButton_10->setVisible(false);
+    ui->webView->load(QUrl(QString("Sample_workflow.html")));
+    states=0;
 }
 
 //存储配置文件
 void MainWindow::Save_palette(){
     QString filenm;
-    filenm = QFileDialog::getSaveFileName(this,tr("Save File"),"", tr("Files (*.plt);;All Files (*.*)"));
+    filenm = QFileDialog::getSaveFileName(this,tr("Save File"),file_path+"/untitled", tr("Files (*.plt);;All Files (*.*)"));
     if(!filenm.isNull()){
         FILE *p;
         p=fopen(filenm.toLocal8Bit(),"w");
@@ -529,7 +658,7 @@ void MainWindow::Save_palette(){
 //载入颜色配置文件
 void MainWindow::Load_palette(){
     QString filenm;
-    filenm = QFileDialog::getOpenFileName(this,tr("Open Files"),tr("/"),tr("Files (*.plt);;All Files (*.*)"));
+    filenm = QFileDialog::getOpenFileName(this,tr("Open Files"),file_path,tr("Files (*.plt);;All Files (*.*)"));
     if(!filenm.isNull()){
         FILE* p;
         p=fopen(filenm.toLocal8Bit(),"r");
@@ -621,9 +750,10 @@ void MainWindow::nest_stat(){
     classic->setIconVisibleInMenu(false);
     edwards->setIconVisibleInMenu(false);
     pvennformat[Listnumber-1]=0;
-    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1],major->outputstring);
     picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
     ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+    states=1;
 }
 
 void MainWindow::edwards_stat(){
@@ -631,9 +761,10 @@ void MainWindow::edwards_stat(){
     nest->setIconVisibleInMenu(false);
     classic->setIconVisibleInMenu(false);
     pvennformat[Listnumber-1]=1;
-    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1],major->outputstring);
     picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
     ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+    states=1;
 }
 
 void MainWindow::classic_stat(){
@@ -641,9 +772,10 @@ void MainWindow::classic_stat(){
     nest->setIconVisibleInMenu(false);
     classic->setIconVisibleInMenu(true);
     pvennformat[Listnumber-1]=2;
-    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1]);
+    picture->flush2(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn_v.svg",pvennformat[Listnumber-1],major->outputstring);
     picture->flush(Listnumber,major->outputStatistic,major->outPutHead,FColor,temppath+"/Linvenn.svg",pvennformat[Listnumber-1]);
     ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+    states=1;
 }
 
 void MainWindow::matrix_state(){
@@ -654,6 +786,7 @@ void MainWindow::matrix_state(){
     pvennformat[Listnumber-1]=3;
     picture->flush(Listnumber,major->outputStatistic,major->Head,FColor,temppath+"/Linvenn.html",pvennformat[Listnumber-1]);
     ui->webView->load(QUrl(temppath+"/Linvenn.html"));
+    states=1;
     itemName *p;
     int bin=(1<<Listnumber)-1;
     ui->plainTextEdit->clear();
@@ -687,10 +820,12 @@ void MainWindow::trigger_format(int trigger_Id){
 void MainWindow::exportunit(){
     QString file1;
     file1= QFileDialog::getSaveFileName(this,
-            tr("Save File"), "", tr("Text (*.txt);;All Files (*.*)"));
+            tr("Save File"),file_path+ui->label->toolTip().replace('\\','-'), tr("Text (*.txt);;All Files (*.*)"));
 
         if (!file1.isNull())
         {
+            file_path=file1;
+            file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
             QFile* temp=new QFile(file1);
             if(temp->exists()){
                 if(!(temp->remove())){
@@ -730,3 +865,20 @@ void MainWindow::setvennstate(int flag){//设置venn图的状态
     }
 }
 
+void MainWindow::help(){
+    if(ui->webView->url().toString().contains(QString("index.html"))){
+        if(states){
+            if(major->total>8){
+                ui->webView->load(QUrl(temppath+"/Linvenn.html"));
+            }else{
+                ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
+            }
+        }else{
+            ui->webView->load(QUrl(QString("Sample_workflow.html")));
+        }
+    }
+    else{
+        ui->webView->load(QUrl(QString("index.html")));
+    }
+
+}

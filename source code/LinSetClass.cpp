@@ -1,5 +1,6 @@
 #include "LinSetClass.h"
 #include <string>
+#include <QtGui>
 setClass::setClass(){
     total = 0;
     for (int i = 0; i < hashArrayMaxSize; i++)
@@ -10,6 +11,7 @@ setClass::setClass(){
     {
         statistic[i] = 0;
         outputStatistic[i]=0;
+        outputstring[i]="";
         vertical[i]=NULL;
     }
     for(int i=0;i<maxNonraph;i++){
@@ -28,6 +30,7 @@ setClass::setClass(QString fileList)
     {
         statistic[i] = 0;
         outputStatistic[i]=0;
+        outputstring[i]="";
         vertical[i]=NULL;
     }
     for(int i=0;i<maxNonraph;i++){
@@ -122,7 +125,13 @@ void setClass::fillHashItemArray(int seq, int id, std::string item)
             return;
         }
     }
+    try{
     hashItemArray[seq]=new itemName;//if can not find item in the hashtable new one
+    }
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(NULL,QString("Error!"),QString(ba.what())+"\n This program will exit!");
+        exit(1);
+    }
     hashItemArray[seq]->item=item;
     hashItemArray[seq]->list = hashItemArray[seq]->list + (1 << (id - 1));
     hashItemArray[seq]->next=q;
@@ -204,7 +213,13 @@ int setClass::initFileIfo(const char *tempfile){
        total--;
        return state;
     }
+    try{
     Head[total-1]=new fileIfo;
+    }
+    catch(std::bad_alloc& ba){
+        QMessageBox::critical(NULL,QString("Error!"),QString(ba.what())+"\n This program will exit!",QMessageBox::Ok,QMessageBox::NoButton);
+        exit(1);
+    }
     if(Head[total-1]==NULL){
         QMessageBox::critical(NULL,QString("Error"),QString("Can not allocate memory!"));
         state=ALLOCATEMEMORYFAILED;
@@ -252,6 +267,8 @@ int setClass::initFileIfo(const char *tempfile){
          }
          j=j/2;
      }
+     std::string unions="∪";
+     std::string Intersection="∩";
      for(int i=1,l=0;i<=list;i++){
          if((tempList=i&list)){
              l=tempList;
@@ -260,6 +277,36 @@ int setClass::initFileIfo(const char *tempfile){
                   l=(l&recordnoSelect[j])>>1;
              }
              outputStatistic[trans]=statistic[tempList];
+             int rest=findunit(trans,list);
+             std::string tmpcontext,tmpcontextr;
+             for(int i=0;i<total;i++){
+                 if(list&1<<i){
+                    if(rest&(1<<i)){
+                        tmpcontext=tmpcontext+Intersection+Head[i]->name;
+                    }else{
+                        tmpcontextr=tmpcontextr+unions+Head[i]->name;
+                    }
+                 }
+             }
+             if(tmpcontext.find(Intersection.c_str())==0){
+                 tmpcontext.replace(0,Intersection.length(),"");
+             }
+             if(tmpcontextr.find(unions.c_str())==0){
+                 tmpcontextr.replace(0,unions.length(),"");
+             }
+             if(tmpcontextr==""){
+                 outputstring[trans]=tmpcontext;
+             }else{
+                 if(tmpcontext.find(Intersection.c_str())==std::string::npos)
+                    outputstring[trans]=tmpcontext+"\\";
+                 else
+                    outputstring[trans]="("+ tmpcontext+")\\";
+                 if(tmpcontextr.find(unions.c_str())==std::string::npos)
+                     outputstring[trans]+=tmpcontextr;
+                 else
+                     outputstring[trans]+="("+tmpcontextr+")";
+             }
+
              trans=0;
          }
      }
@@ -477,6 +524,7 @@ int setClass::initFileIfo(const char *tempfile){
      {
          statistic[i] = 0;
          outputStatistic[i]=0;
+         outputstring[i]="";
      }
      for(int i=0;i<maxNonraph;i++){
          Head[i]=NULL;
