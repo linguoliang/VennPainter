@@ -17,7 +17,7 @@ Data can be loaded with "Files"->"Open Files"(Fig. 1). This application allows o
 **Fig. 1** open files menu
 ##3. Customize image and data
 ###3.1 Options for color or the number of sets
-After loading data, a control panel will appear on the left with check-box and color button in pairs (Fig. 2). The loaded sets could be selected or unselected by clicking check-box. The corresponding color in the image could be changed by the color button. The color information can be saved by “Setting”->”Save config”. The saved color information could be loaded by “Setting”->”Load config”.
+After loading data, a control panel will appear on the left with check-box and color button in pairs (Fig. 2). The loaded sets could be selected or unselected by clicking check-box. The corresponding color in the image could be changed by the color button. The color information can be saved by “Setting”->”Save config”. The saved color information could be loaded by “Setting”->”Load config”.  
 ![Check-box and Color button in pairs](PNGfigures/2.png)
 **Fig. 2** Check-box and Color button in pairs
 ###3.2 Switch among Classic, Edwards' and Nested Venn diagrams
