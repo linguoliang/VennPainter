@@ -23,15 +23,15 @@ After loading data, a control panel will appear on the left with check-box and c
 ###3.2 Switch among Classic, Edwards' and Nested Venn diagrams
 VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn and Nested Venn) for diagram options. In our design, the Classic Venn, Edward’s Venn and Nested Venn could respectively display the sharing relationships at most five, six and eight datasets with diagram output. After diagram displayed, users can use right-click menu to switch among the three diagram options when they are available (Fig. 3a). There is an icon ahead the selected modes.. If the mode is unavailable, the item in the right-click menu turns grey and cannot be selected (Fig. 3b). The number of sets determines whether the mode is valid (Table 1). 
   |**a**    |**b**     |
-  |:--------|:---------|
+  |:-----|:-----|
   |![right-click menus of the two diagrams](PNGfigures/3-1.png)|![right-click menus of the two diagrams](PNGfigures/3-2.png)|  
   **Fig. 3** right-click menus of the two diagrams.  
       
 **Table 1** Capacity of Venn diagram in VennPainter  
-|**Number of sets**|1   |2  |3  |4  |5  |6  |7  |8  |9~31|
-| -----|:-----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|:-----:|:------:|
+|**Number of sets**|1   |2  |3  |4  |5  |6  |7  |8  |9~31|  
+| -----|:-----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|:-----:|:------:|  
 |**Classic**|√|√|√|√|√|×|×|×|×|  
-|**Edwards'**|√|√|√|√|√|√|×|×|×|
+|**Edwards'**|√|√|√|√|√|√|×|×|×|  
 |**Nested**|×|×|×|×|√|√|√|√|×|  
   
 ###3.3 View single intersection
