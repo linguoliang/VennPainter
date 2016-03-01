@@ -1,53 +1,25 @@
-#VennPainter User Manual
-##1 Introduction
-###1.1 Purpose
-This manual will introduce How to use VennPainter in detail.
-###1.2 Background
-Venn Diagram is diagram with a few closed curve to indicate the relationships among datasets, including intersection, sum, complement. In comparative genomics, they depict unique and shared sets of genes or gene families. Many programs can generate Venn diagrams, yet these come with many inconveniences, such as inefficiency, limited input, and memory-consumption. To provide a more comprehensive tool for genome research, we developed the program VennPainter using a C++ in Qt4.8 framework.
-##2 Application
-###2.1 Function
-The main function of this software is to draw Venn diagram based on the various datasets (including gene names, protein names, etc.), and export shared datasets. VennPainter provides Classic Venn, Edwards’ Venn and Nested Venn. The Maximum datasets are 8 in graph and 31 in Matrix. The software can run on windows, Linux and Mac OS.
-####2.1.1. Paint module
-Paint module draws Venn diagrams according to input dataset. Venn diagrams are automatically generated after loading the data. There are some operations to modify Venn diagram. Eight checkboxes and ten buttons, including eight "color" button, "remove" button and a "export" button make user easier to modify venn diagram(Fig. 1).
+#User Manual
+##1.Run-time Environment
+###1.1 Hardware
+VennPainter was developed by using Qt 4.8.5 under its LGPL v2.1 license. This software had been  tested on Win xp,Win 7,Win 8,Linux Mint 13,Mac OS 10.8.5.
+Minimum requirement: PC (PIII866)，512M memory，20G Hard disk
 
-Users can use "color" button to change set’s color, and use checkboxes to change the number of sets.
+###2.2 System
+Operating system：Windows xp or higher，Linux with GUI, Mac OS 10.8.5 or higher.
 
- 
-![Color Selection Dialog](PNGfigures/ColorSelectionDialog.png) 
+##2. Load data
+###.1 Input data format
+Each input set should be a text file. Every element should be separated by white space characters (space, tab, and newline) in the set. If an element displays multiple times in a file, it will be analyzed as one element only. About the processing capability, data with no more than eight sets could be analyzed and output with both diagrams and text files. As for data sets ranging from 9 to 31, only a text-based output format could be generated. VennPainter supports three text-based format (e.g., vertical, horizontal and matrix) for further analysis.
 
-Fig.1 Color Selection Dialog
-
-Users can use save and load configure file through ‘Setting->Load config’(Fig. 2) and ‘Setting->Save config’. The configure file only contains the color patterns ,at present.
- 
-![Save and load configure file](PNGfigures/Saveandloadconfigurefile.png)
-
-Fig. 2 Save and load configure file
-
-This software allows you zoom the venn diagram through "right click"(Fig. 3) menu or ‘Ctrl+ Middle button’. To export image, user can also use "right click" menu or through ‘Files->Save image’. Clicking ‘Nest Venn’, ‘Edward’s Venn’ and ‘Classic Venn’ to switch to different Venn diagram when it is available.
- 
-!["right click" menu](PNGfigures/rightclickmenu.png)
-
-Fig. 3 "right click" menu
-####2.1.2. Data Output Module
-Using ‘Files->Save as’ to export shared datasets(Fig. 4). There are three formats for shared datasets：
-
-Horizontal format(.hf): each row is a shared dataset.
-
-Vertical format (.vf): each colum is a shared dataset.
-
-Matrix format(.mf): the maxtrix represents the relationship between datasets and elements. 
-User can also export shared datasets by clicking the corresponding number in the picture and clicking ‘Export’ button(Fig. 1).
- 
-![Output Data Format](PNGfigures/OutputDataFormat.png)
-
-Fig. 4 Output Data Format
-##3 Input Data Format
-VennPainter requires input data that consist of an individual text file for each dataset. Further, space, carriage return or horizontal tab key must separate every element in the dataset.
-##4 Run-time Environment
-###4.1 Hardware
-VennPainter was developed using Qt 4.8.5 under its LGPL v2.1 license. We have tested this software on Win xp,Win 7,Win 8,Linux Mint 13,Mac OS 10.8.5.
-
-Minimum requirement： PC (PIII866)，512M memory，20G Hard disk
-###4.2 System
-Operating system：Windows xp or higher，Linux, Mac OS 10.8.5 or higher.
-
+###2.2 Load data
+Data can be loaded with "Files"->"Open Files"(Fig. 1). This application allows one or more files to be loaded at once.
+![open files menu](PNGfigures/1.png)
+**Fig. 1** open files menu
+##3. Customize image and data
+###3.1 Options for color or the number of sets
+After loading data, a control panel will appear on the left with check-box and color button in pairs (Fig. 2). The loaded sets could be selected or unselected by clicking check-box. The corresponding color in the image could be changed by the color button. The color information can be saved by “Setting”->”Save config”. The saved color information could be loaded by “Setting”->”Load config”.
+![Check-box and Color button in pairs](PNGfigures/2.png)
+**Fig. 2** Check-box and Color button in pairs
+###3.2 Switch among Classic, Edwards' and Nested Venn diagrams
+VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn and Nested Venn) for diagram options. In our design, the Classic Venn, Edward’s Venn and Nested Venn could respectively display the sharing relationships at most five, six and eight datasets with diagram output. After diagram displayed, users can use right-click menu to switch among the three diagram options when they are available (Fig. 3a). There is an icon ahead the selected modes.. If the mode is unavailable, the item in the right-click menu turns grey and cannot be selected (Fig. 3b). The number of sets determines whether the mode is valid (Table 1). 
+**a**
