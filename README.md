@@ -29,7 +29,7 @@ VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn 
       
 **Table 1** Capacity of Venn diagram in VennPainter  
 |**Number of sets**|1   |2  |3  |4  |5  |6  |7  |8  |9~31|
-|:-----------------|:--:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|
+| -----|:-----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|:-----:|:------:|
 |**Classic**|√|√|√|√|√|×|×|×|×|  
 |**Edwards'**|√|√|√|√|√|√|×|×|×|
 |**Nested**|×|×|×|×|√|√|√|√|×|  
