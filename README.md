@@ -55,7 +55,7 @@ The data can be cleared by clicking the “Clear All” button. After clearing a
 著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。
 
 | ABCD | EFGH | IJKL |
-| -----|:----:| ----:|
+| -----|:-----:| ----:|
 | a    | b    | c    |
 | d    | e    |  f   |
 | g    | h    |   i  |
