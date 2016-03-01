@@ -29,10 +29,10 @@ VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn 
       
 **Table 1** Capacity of Venn diagram in VennPainter  
 |**Number of sets**|1   |2  |3  |4  |5  |6  |7  |8  |9~31|  
-| -----|:-----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|:-----:|:------:|  
-|**Classic**|√|√|√|√|√|×|×|×|×|  
-|**Edwards'**|√|√|√|√|√|√|×|×|×|  
-|**Nested**|×|×|×|×|√|√|√|√|×|  
+| -----------------|:--:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|  
+|**Classic**       |√   |√  |√  |√  |√  |×  |×  |×  |×   |  
+|**Edwards'**      |√   |√  |√  |√  |√  |√  |×  |×  |×   |  
+|**Nested**        |×   |×  |×  |×  |√  |√  |√  |√  |×   |  
   
 ###3.3 View single intersection
 VennPainter allows users view a single intersection on the diagram when the numbers of sets are no more than eight. When the mouse stays over a number on the image, the corresponding tooltip will show the logic relationship of the intersection (Fig. 4). The list of sharing elements will appear on the right of the program after users click the corresponding number. The list contains all the elements that belong to the corresponding intersection.
