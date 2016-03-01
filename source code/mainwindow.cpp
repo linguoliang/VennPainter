@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug> //for debug
+//#include <QDebug> //for debug
 //#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -200,7 +200,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::open(){//
-    qDebug()<<file_path;
+
     fileName = QFileDialog::getOpenFileNames(this,tr("Open Files"),file_path+'/');
 //    QTime time;
 //    time.start();
@@ -208,7 +208,7 @@ void MainWindow::open(){//
         file_path=fileName[0];
         file_path.replace('\\','/');
         file_path.remove(file_path.lastIndexOf('/'),file_path.length());
-        qDebug()<<file_path;
+
         fileList=fileName.join("\r");
         major->addFile(fileList);
         if(major->total<9)
@@ -242,7 +242,7 @@ void MainWindow::exportsharesets(){
         file_path=file1;
         file_path.replace('\\','/');
         file_path.remove(file_path.lastIndexOf('/'),file_path.length());
-        qDebug()<<file_path;
+
         if(file1.endsWith(".hf"))
             fm=3;
         else if(file1.endsWith(".vf"))
@@ -290,7 +290,7 @@ void MainWindow::Save_picture(){
             file_path=file1;
             file_path.replace('\\','/');
             file_path.remove(file_path.lastIndexOf('/'),file_path.length());
-            qDebug()<<file_path;
+
             QFile* temp=new QFile(file1);
             if(temp->exists()){
                 if(!(temp->remove())){
@@ -831,7 +831,7 @@ void MainWindow::exportunit(){
             file_path=file1;
             file_path.replace('\\','/');
             file_path.remove(file_path.lastIndexOf('/'),file_path.length());
-            qDebug()<<file_path;
+
             QFile* temp=new QFile(file1);
             if(temp->exists()){
                 if(!(temp->remove())){
