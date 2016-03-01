@@ -1148,8 +1148,8 @@ void svg::flush(int total, int *p, fileIfo *Head[], int *color, QString temppath
             fprintf(file,"<title>For Maxtrix</title>\n");
             fprintf(file,"</head>\n");
             fprintf(file,"<body>\n");
-            fprintf(file,"<h1 style=\"text-align: center\">Matrix ( without Diagrams )</h1>\n");
-            fprintf(file,"<span style=\"font-size: 24px\">There is no diagram for more than 8 sets, but you can still export matrix formate and export the shared datasets. <br></span>\n");
+            fprintf(file,"<h1 style=\"text-align: center\">data ( without Diagrams )</h1>\n");
+            fprintf(file,"<span style=\"font-size: 24px\">There is no diagram for more than 8 sets, but you can still export data with three text-based formates. <br></span>\n");
             fprintf(file,"<span style=\"font-size: 24px;\">You have loaded n datasets as follow:<br></span>\n");
             for(int i=0;i<total;i++){
                 fprintf(file,"<span style=\"color: #F00; font-size: 24px;\">&nbsp;&nbsp;&nbsp;&nbsp;%d. %s<br></span>\n",i+1,Head[i]->name.c_str());
