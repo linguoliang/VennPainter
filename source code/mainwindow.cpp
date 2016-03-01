@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include <QDebug> //for debug
+#include <QDebug> //for debug
 //#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -200,12 +200,15 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::open(){//
-    fileName = QFileDialog::getOpenFileNames(this,tr("Open Files"),file_path);
+    qDebug()<<file_path;
+    fileName = QFileDialog::getOpenFileNames(this,tr("Open Files"),file_path+'/');
 //    QTime time;
 //    time.start();
     if(!fileName.empty()){
         file_path=fileName[0];
-        file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
+        file_path.replace('\\','/');
+        file_path.remove(file_path.lastIndexOf('/'),file_path.length());
+        qDebug()<<file_path;
         fileList=fileName.join("\r");
         major->addFile(fileList);
         if(major->total<9)
@@ -233,14 +236,13 @@ void MainWindow::open(){//
 void MainWindow::exportsharesets(){
     QString file1;
     int fm=0;
-    if(major->total>8)
-        file1=QFileDialog::getSaveFileName(this,tr("Save File"),file_path+"/untitled",tr("Matrix Form (*.mf)"),NULL,QFileDialog::HideNameFilterDetails);
-    else {
-        file1=QFileDialog::getSaveFileName(this,tr("Save File"),file_path+"/untitled",tr("Matrix Form (*.mf);;Vertical Form (*.vf);;Horizontal Form (*.hf)"),NULL,QFileDialog::HideNameFilterDetails);
-    }
+
+    file1=QFileDialog::getSaveFileName(this,tr("Save File"),file_path+"/untitled",tr("Matrix Form (*.mf);;Vertical Form (*.vf);;Horizontal Form (*.hf)"),NULL,QFileDialog::HideNameFilterDetails);
     if(!file1.isNull()){
         file_path=file1;
-        file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
+        file_path.replace('\\','/');
+        file_path.remove(file_path.lastIndexOf('/'),file_path.length());
+        qDebug()<<file_path;
         if(file1.endsWith(".hf"))
             fm=3;
         else if(file1.endsWith(".vf"))
@@ -286,7 +288,9 @@ void MainWindow::Save_picture(){
         if (!file1.isNull())
         {
             file_path=file1;
-            file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
+            file_path.replace('\\','/');
+            file_path.remove(file_path.lastIndexOf('/'),file_path.length());
+            qDebug()<<file_path;
             QFile* temp=new QFile(file1);
             if(temp->exists()){
                 if(!(temp->remove())){
@@ -436,7 +440,7 @@ void MainWindow::Check_checkbox(){//检查有多少被选中，并将结果存�
 
 
 void MainWindow::about(){
-    QMessageBox::about(this,QString("CopyRight(C)"),QString("<html><head/><body><p><span style=\" font-weight:600;\">VennPainter V1.0 is a tool for drawing venn diagrams with </span><span style=\" font-weight:600; color:#ff0000;\">nest venn diagrams.</span><span style=\" font-weight:600; color:#000000;\"> It also provide classic venn and Edward's venn.</span></p><p><br/></p><p><span style=\" font-weight:600; color:#000000;\">Bug report:</span><a href=\"mailto:linguoliang1313@gmail.com\"><span style=\" text-decoration: underline; color:#0000ff;\">linguoliang1313@gmail.com</span></a></p></body></html>"));
+    QMessageBox::about(this,QString("CopyRight(C)"),QString("<html><head/><body><p><span style=\" font-weight:600;\">VennPainter V1.1.0 is a tool for drawing venn diagrams with </span><span style=\" font-weight:600; color:#ff0000;\">nest venn diagrams.</span><span style=\" font-weight:600; color:#000000;\"> It also provide classic venn and Edward's venn.</span></p><p><br/></p><p><span style=\" font-weight:600; color:#000000;\">Bug report:</span><a href=\"mailto:linguoliang1313@gmail.com\"><span style=\" text-decoration: underline; color:#0000ff;\">linguoliang1313@gmail.com</span></a></p></body></html>"));
 }
 
 void MainWindow::aboutQt(){
@@ -820,12 +824,14 @@ void MainWindow::trigger_format(int trigger_Id){
 void MainWindow::exportunit(){
     QString file1;
     file1= QFileDialog::getSaveFileName(this,
-            tr("Save File"),file_path+ui->label->toolTip().replace('\\','-'), tr("Text (*.txt);;All Files (*.*)"));
+            tr("Save File"),file_path+'/'+ui->label->toolTip().replace('\\','-'), tr("Text (*.txt);;All Files (*.*)"));
 
         if (!file1.isNull())
         {
             file_path=file1;
-            file_path.remove(file_path.lastIndexOf('/')-1,file_path.length());
+            file_path.replace('\\','/');
+            file_path.remove(file_path.lastIndexOf('/'),file_path.length());
+            qDebug()<<file_path;
             QFile* temp=new QFile(file1);
             if(temp->exists()){
                 if(!(temp->remove())){

@@ -198,7 +198,7 @@ int setClass::initFileIfo(const char *tempfile){
     total++;
     if(total>maxSamples&&total<10){
 
-       flag=QMessageBox::question(NULL,QString("Warnings"),QString("You have loaded over 8 sets.Swith to Matrix From!"),QMessageBox::Yes,QMessageBox::No);
+       flag=QMessageBox::question(NULL,QString("Warnings"),QString("You have loaded over 8 sets.Swith to data mode!"),QMessageBox::Yes,QMessageBox::No);
        if(flag==QMessageBox::No){
            total--;
            state=EIGHTONLY;
