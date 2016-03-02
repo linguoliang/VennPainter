@@ -13,7 +13,7 @@ Each input set should be a text file. Every element should be separated by white
 
 ###2.2 Load data
 Data can be loaded with "Files"->"Open Files"(Fig. 1). This application allows one or more files to be loaded at once.
-![open files menu](PNGfigures/1.png)
+![open files menu](PNGfigures/1.png)  
 **Fig. 1** open files menu
 ##3. Customize image and data
 ###3.1 Options for color or the number of sets
