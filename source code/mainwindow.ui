@@ -580,7 +580,7 @@
   </action>
   <action name="actionHelp_F1">
    <property name="text">
-    <string>Help     F1</string>
+    <string>User Manual</string>
    </property>
   </action>
  </widget>
