@@ -26,7 +26,19 @@ VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn 
   |:-----|:-----|
   |![right-click menus of the two diagrams](PNGfigures/3-1.png)|![right-click menus of the two diagrams](PNGfigures/3-2.png)|  
   **Fig. 3** right-click menus of the two diagrams.  
-      
+  <table width="100%">
+                <tr>
+                <td><b>a</b></td>
+                <td><b>b</b></td>
+                </tr>
+                <tr width="100%">
+                <td width="50%"><img src="PNGfigures/3-1.png" width="100%" height=""  alt=""/></td>
+                <td  align="center" width="50%"><img src="PNGfigures/3-2.png" width="80%" height=""  alt=""/></td>
+                </tr>
+                <tr>
+                <td align="center" colspan="2"><b>Fig. 3</b> right-click menu</td>
+                </tr>
+                </table>
 **Table 1** Capacity of Venn diagram in VennPainter  
 <table  class="table table-bordered table-striped table-condensed" border="1" align="center">
     <caption><b>Table 1</b> Capacity of Venn diagram in VennPainter </caption>
