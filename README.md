@@ -18,13 +18,12 @@ Data can be loaded with "Files"->"Open Files"(Fig. 1). This application allows o
 ##3. Customize image and data
 ###3.1 Options for color or the number of sets
 After loading data, a control panel will appear on the left with check-box and color button in pairs (Fig. 2). The loaded sets could be selected or unselected by clicking check-box. The corresponding color in the image could be changed by the color button. The color information can be saved by “Setting”->”Save config”. The saved color information could be loaded by “Setting”->”Load config”.  
-![Check-box and Color button in pairs](PNGfigures/2.png)
+![Check-box and Color button in pairs](PNGfigures/2.png)  
 **Fig. 2** Check-box and Color button in pairs
 ###3.2 Switch among Classic, Edwards' and Nested Venn diagrams
 VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn and Nested Venn) for diagram options. In our design, the Classic Venn, Edward’s Venn and Nested Venn could respectively display the sharing relationships at most five, six and eight datasets with diagram output. After diagram displayed, users can use right-click menu to switch among the three diagram options when they are available (Fig. 3a). There is an icon ahead the selected modes.. If the mode is unavailable, the item in the right-click menu turns grey and cannot be selected (Fig. 3b). The number of sets determines whether the mode is valid (Table 1). 
 ![open files menu](PNGfigures/3.png)  
 **Fig. 3** right-click menus of the two diagrams.  
-**Table 1** Capacity of Venn diagram in VennPainter  
 <table  class="table table-bordered table-striped table-condensed" border="1" align="center">
     <caption><b>Table 1</b> Capacity of Venn diagram in VennPainter </caption>
           <tr align="center">
@@ -87,6 +86,7 @@ VennPainter only support SVG images output. VennPainter save images with "Files"
 ##4.2 Export shared data
 VennPainter provides three text-based formats for shared datasets, including vertical format, horizontal format and matrix format( Fig. 5). In the Matrix format (Fig. 5a), the first row contains all datasets, and the first column contains all elements from all datasets. Other columns indicate if the element existing in each dataset: “1” indicate yes, while “0” indicate no. In the Vertical format (Fig. 5b), each row contains the elements belonging to each intersection. For example, a six-set Venn diagram has 63 intersections and thus, the text file contains 63 rows, each rows contains all the elements belonging to each intersection. Horizontal format (Fig. 5c) is identical to the vertical mode except for the exchange of columns and rows.
 ![output dataset](PNGfigures/4.png)  
+**Fig. 5** output dataset  
 ###4.3 Export single intersection
 Moving mouse pointer over the number on the image, the tooltip will show the corresponding relationship of the intersection. If clicking the number, the shared list will appear on the right panel. The shared list can be exported as a text file by clicking the “Export shared list”( Fig. 4).
 ##5. Other Operations
