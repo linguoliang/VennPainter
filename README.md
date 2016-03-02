@@ -22,19 +22,8 @@ After loading data, a control panel will appear on the left with check-box and c
 **Fig. 2** Check-box and Color button in pairs
 ###3.2 Switch among Classic, Edwards' and Nested Venn diagrams
 VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn and Nested Venn) for diagram options. In our design, the Classic Venn, Edward’s Venn and Nested Venn could respectively display the sharing relationships at most five, six and eight datasets with diagram output. After diagram displayed, users can use right-click menu to switch among the three diagram options when they are available (Fig. 3a). There is an icon ahead the selected modes.. If the mode is unavailable, the item in the right-click menu turns grey and cannot be selected (Fig. 3b). The number of sets determines whether the mode is valid (Table 1). 
-  <table width="1000">
-                <tr>
-                <td><b>a</b></td>
-                <td><b>b</b></td>
-                </tr>
-                <tr width="100%">
-                <td width="50%"><img src="PNGfigures/3-1.png" width="100%" height=""  alt=""/></td>
-                <td  align="center" width="50%"><img src="PNGfigures/3-2.png" width="80%" height=""  alt=""/></td>
-                </tr>
-                <tr>
-                <td colspan="2"><b>Fig. 3</b> right-click menus of the two diagrams.</td>
-                </tr>
-                </table>
+![open files menu](PNGfigures/3.png)  
+**Fig. 3** right-click menus of the two diagrams.  
 **Table 1** Capacity of Venn diagram in VennPainter  
 <table  class="table table-bordered table-striped table-condensed" border="1" align="center">
     <caption><b>Table 1</b> Capacity of Venn diagram in VennPainter </caption>
@@ -64,7 +53,7 @@ VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn 
           </tr>
           <tr align="center">
           <th>Edwards'</th>
-          <td>&#8730;</td>
+          <td>&#215;</td>
           <td>&#8730;</td>
           <td>&#8730;</td>
           <td>&#8730;</td>
