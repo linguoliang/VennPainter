@@ -26,7 +26,7 @@ VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn 
   |:-----|:-----|
   |![right-click menus of the two diagrams](PNGfigures/3-1.png)|![right-click menus of the two diagrams](PNGfigures/3-2.png)|  
   **Fig. 3** right-click menus of the two diagrams.  
-  <table border="0" width="100%">
+  <table border="2" width="100%">
                 <tr>
                 <td><b>a</b></td>
                 <td><b>b</b></td>
