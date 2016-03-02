@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>User Manual</title>
+</head>
+<body>
+	<div>
+		<h1 align="center">User Manual</h1>
+		<div style="width:50%; margin-left:25%">
+        	<h3>
+            	<a href="#run-time_environment">1. Run-time Environment</a><br>
+            	<a href="#load_data">2. Load data</a><br>
+				<a href="#customize">3. Customize image</a><br>
+				<a href="#export_data">4. Export data</a><br>
+                <a href="#other_operation">5. Other Operations</a><br>
+            </h3>
+		</div>
+        <div style=" width:90%; margin-left:5%">
+        	<a name="run-time_environment"><h3>1. Run-time Environment</h3></a>
+          <h4>1.1 Hardware</h4>
+          <p style="text-indent:2em;word-wrap:break-word">VennPainter was developed using Qt 4.8.5 under its LGPL v2.1 license. We have tested this software on Win xp,Win 7,Win 8,Linux Mint 13,Mac OS 10.8.5.</p> <p style="text-indent:2em;word-wrap:break-word">Minimum requirement: PC (PIII866)，512M memory，20G Hard disk.</p>
+            <h4>1.2 System</h4>
+          <p style="text-indent:2em;word-wrap:break-word">Operating system：Windows xp or higher，Linux with GUI, Mac OS 10.8.5 or higher.</p>
+       	  <a name="load_data"><h3>2. Load data</h3></a>
+            <h4>2.1 Input data formate</h4>
+            <p style="text-indent:2em;word-wrap:break-word">Each input set should be a text file. Every element should be separated by white space characters (space, tab, and newline) in the set. If an element displays multiple times in a file, it will be analyzed as one element only. About the processing capability, data with no more than eight sets could be analyzed and output with both diagrams and text files. As for data sets ranging from 9 to 31, only a text-based output format could be generated. VennPainter supports three text-based format (e.g., vertical, horizontal and matrix) for further analysis.
+          </p>
+            <h4>2.2 Load data</h4>
+            <p style="text-indent:2em;word-wrap:break-word">Data can be loaded with "Files"->"Open Files"(Fig. 1). This application allows one or more files to be loaded at once.</p>
+            <div align="center" style="width:70%; margin-left:15%">
+            	<img src="src/1.png" width="80%" height=""   alt=""/>
+           	  <p align="center" ><b>Fig. 1</b> open files menu</p> 
+            </div>
+            <a name="customize"><h3>3. Customize image and data</h3></a>
+          <h4>3.1 Options for color or the number of sets</h4>
+            <p style="text-indent:2em;word-wrap:break-word">
+        After loading data, a control panel will appear on the left with check-box and color button in pairs (Fig. 2). The loaded sets could be selected or unselected by clicking check-box. The corresponding color in the image could be changed by the color button. The color information can be saved by “Setting”->”Save config”. The saved color information could be loaded by “Setting”->”Load config”.
+          </p>
+            <div  align="center" style="width:70%; margin-left:15%">
+        		<img src="src/2.png" width="100%" height=""  alt=""/>
+<p align="center"><b>Fig. 2</b> Check-box and Color button in pairs</p> 
+         	</div>
+       	  <h4>3.2 Switch among Classic, Edwards' and Nested Venn diagrams</h4>
+       	  <p style="text-indent:2em; word-wrap:break-word">VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn and Nested Venn) for diagram options. In our design, the Classic Venn, Edward’s Venn and Nested Venn could respectively display the sharing relationships at most five, six and eight datasets with diagram output. After diagram displayed, users can use right-click menu to switch among the three diagram options when they are available (Fig. 3a). There is an icon ahead the selected modes.. If the mode is unavailable, the item in the right-click menu turns grey and cannot be selected (Fig. 3b). The number of sets determines whether the mode is valid (Table 1). </p>
+        	<div align="center">
+            	<table width="100%">
+                <tr>
+                <td><b>a</b></td>
+                <td><b>b</b></td>
+                </tr>
+                <tr width="100%">
+                <td width="50%"><img src="src/3-1.png" width="100%" height=""  alt=""/></td>
+                <td  align="center" width="50%"><img src="src/3-2.png" width="80%" height=""  alt=""/></td>
+                </tr>
+                <tr>
+                <td align="center" colspan="2"><b>Fig. 3</b> right-click menu</td>
+                </tr>
+                </table>
+          </div><br>
+
+          <div style="width:100%">
+          <table border="1" width="100%">
+          <caption><b>Table 1</b> Capacity of Venn diagram in VennPainter </caption>
+          <tr align="center">
+          <th width="">Number of sets</th>
+          <th >1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9&#126;31</th>
+          </tr>
+          <tr align="center">
+          <th>Classic</th>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          </tr>
+          <tr align="center">
+          <th>Edwards'</th>
+          <td>&#215;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          </tr>
+          <tr align="center">
+          <th>Nested</th>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#215;</td>
+          </tr>
+          </table>
+          </div>
+          <h4>3.3 View single intersection</h4>
+          <p style="text-indent:2em">VennPainter allows users view a single intersection on the diagram when the numbers of sets are no more than eight. When the mouse stays over a number on the image, the corresponding tooltip will show the logic relationship of the intersection (Fig. 4). The list of sharing elements will appear on the right of the program after users click the corresponding number. The list contains all the elements that belong to the corresponding intersection. </p>
+                              <div align="center"><img src="src/4-1.png" width="90%" alt=""/><br>
+          <b>Fig. 4</b> view single intersection
+</div>
+          <a name="export_data"><h3>4. Export data</h3></a>
+          <h4>4.1 Export image</h4>
+          <p style="text-indent:2em">
+         VennPainter only support SVG images output. VennPainter save images with "Files"->"Save image" or "right-click menu"->"Save image". The SVG images could be read and modified by many graphic vector editors, such as Adobe Illustrator, Inkscape and CorelDRAW, etc.
+          </p>
+
+          <h4>4.2 Export shared data</h4>
+          <p style="text-indent:2em">VennPainter provides three text-based formats for shared datasets, including vertical format, horizontal format and matrix format( Fig. 5). In the Matrix format (Fig. 5a), the first row contains all datasets, and the first column contains all elements from all datasets. Other columns indicate if the element existing in each dataset: “1” indicate yes, while “0” indicate no. In the Vertical format (Fig. 5b), each row contains the elements belonging to each intersection. For example, a six-set Venn diagram has 63 intersections and thus, the text file contains 63 rows, each rows contains all the elements belonging to each intersection. Horizontal format (Fig. 5c) is identical to the vertical mode except for the exchange of columns and rows.</p>
+          <p style="text-indent:2em">
+The three formats of shared datasets can be exported with "Files"->"Save data".
+</p>
+          <div align="center"><img src="src/4.png" width="80%" height=""  alt=""/><br>
+          <b>Fig. 5</b> output dataset
+</div>
+          <h4>4.3 Export single intersection</h4>
+          <p style="text-indent:2em">Moving mouse pointer over the number on the image, the tooltip will show the corresponding relationship of the intersection. If clicking the number, the shared list will appear on the right panel. The shared list can be exported as a text file by clicking the “Export shared list”( Fig. 4).</p>
+          <a name="other_operation"><h3>5. Other Operations</h3></a>
+          <h4>5.1 Clear all data</h4>
+          <p style="text-indent:2em">The data can be cleared by clicking the “Clear All” button. After clearing all data, other datasets can be loaded to construct a new Venn diagram.</p>
+      </div>
+	</div> 
+</body>
+</html>
