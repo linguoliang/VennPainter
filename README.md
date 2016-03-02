@@ -28,12 +28,57 @@ VennPainter provides three types of Venn diagram (Classic Venn, Edwards’ Venn 
   **Fig. 3** right-click menus of the two diagrams.  
       
 **Table 1** Capacity of Venn diagram in VennPainter  
-|**Number of sets**|1   |2  |3  |4  |5  |6  |7  |8  |9~31|  
-| -----------------|:--:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|  
-|**Classic**       |√   |√  |√  |√  |√  |×  |×  |×  |×   |  
-|**Edwards'**      |√   |√  |√  |√  |√  |√  |×  |×  |×   |  
-|**Nested**        |×   |×  |×  |×  |√  |√  |√  |√  |×   |  
-  
+<table  class="table table-bordered table-striped table-condensed" border="1" width="100%">
+    <caption><b>Table 1</b> Capacity of Venn diagram in VennPainter </caption>
+          <tr align="center">
+          <th width="">Number of sets</th>
+          <th >1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9&#126;31</th>
+          </tr>
+          <tr align="center">
+          <th>Classic</th>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          </tr>
+          <tr align="center">
+          <th>Edwards'</th>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          </tr>
+          <tr align="center">
+          <th>Nested</th>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#215;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#8730;</td>
+          <td>&#215;</td>
+          </tr>
+          </table>
 ###3.3 View single intersection
 VennPainter allows users view a single intersection on the diagram when the numbers of sets are no more than eight. When the mouse stays over a number on the image, the corresponding tooltip will show the logic relationship of the intersection (Fig. 4). The list of sharing elements will appear on the right of the program after users click the corresponding number. The list contains all the elements that belong to the corresponding intersection.
 ![Data output for single intersection](PNGfigures/4-1.png)  
