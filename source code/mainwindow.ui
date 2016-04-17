@@ -43,6 +43,29 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="3">
+     <widget class="QPlainTextEdit" name="plainTextEdit">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Shared list</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="3">
      <widget class="QPushButton" name="pushButton_10">
       <property name="sizePolicy">
@@ -56,29 +79,6 @@
       </property>
       <property name="text">
        <string>Export shared list</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QPlainTextEdit" name="plainTextEdit">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>172</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Shared list</string>
       </property>
      </widget>
     </item>
@@ -466,6 +466,13 @@
       </layout>
      </widget>
     </item>
+    <item row="3" column="3">
+     <widget class="QPushButton" name="pushButton_11">
+      <property name="text">
+       <string>Hide shared list panel </string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -474,7 +481,7 @@
      <x>0</x>
      <y>0</y>
      <width>916</width>
-     <height>23</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Files">
@@ -570,12 +577,12 @@
   </action>
   <action name="actionSave_color_palette">
    <property name="text">
-    <string>Save config</string>
+    <string>Save Color Palette</string>
    </property>
   </action>
   <action name="actionLoad_color_palette">
    <property name="text">
-    <string>Load config</string>
+    <string>Load Color Palette</string>
    </property>
   </action>
   <action name="actionHelp_F1">

@@ -24,6 +24,7 @@ protected:
     void wheelRolled(QWheelEvent *event);
 
 private slots:
+    void hidesharedListpanel();
     void help();
     void singlecontent(QUrl url);
     void open();
@@ -69,8 +70,8 @@ private:
     QString file_path;
     QWebPage *pagetmp;
     Ui::MainWindow *ui;
-    QAction *zoom_out,*zoom_in,*reset,*save,*seprator,*nest,*edwards,*classic;
-    QList<QAction* > *List;
+    QAction *zoom_out,*zoom_in,*reset,*save,*seprator,*nest,*edwards,*classic,*seprator1;
+    QList<QAction* > *List, *Listtoolbar;
     QStringList fileName,inputfilename;
     QString fileList;
     QString outputfilename;

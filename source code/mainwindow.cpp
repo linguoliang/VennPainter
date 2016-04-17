@@ -2,7 +2,12 @@
 #include "ui_mainwindow.h"
 //#include <QDebug> //for debug
 //#include <QTime>
-
+#include <QtGlobal>
+#ifdef Q_OS_MAC64
+QString Osprefixe="./VennPainter.app/Contents/Resources/";
+#else
+QString Osprefixe="./";
+#endif
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -17,18 +22,28 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plainTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
     try{
     List=new QList<QAction*>();
+    Listtoolbar=new QList<QAction*>();
     zoom_out=new QAction(QIcon(":/Zoom_out.png"),"Zoom out",ui->webView);
+    zoom_out->setShortcut(QKeySequence::ZoomOut);
     zoom_in=new QAction(QIcon(":/Zoom_in.png"),"Zoom in",ui->webView);
+    zoom_in->setShortcut(QKeySequence::ZoomIn);
     reset=new QAction(QIcon(":/reset.png"),"Reset scale",ui->webView);
     save=new QAction(QIcon(":/Save_Image.png"),"Save image",ui->webView);
     seprator=new QAction(ui->webView);
+    seprator1 = new QAction(ui->webView);
     nest=new QAction(QIcon(":/venn.png"),"Nest Venn",ui->webView);
+    nest->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_N));
     edwards=new QAction(QIcon(":/edward.png"),"Edward's Venn",ui->webView);
+    edwards->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_E));
     classic=new QAction(QIcon(":/classic.png"),"Classic Venn",ui->webView);
+    classic->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_Z));
     seprator->setSeparator(true);
+    seprator1->setSeparator(true);
     Zoom=new QCursor(QPixmap(":/Zoom.png"));
     major=new setClass();
     picture=new svg();
+    ui->actionLoad_color_palette->setIcon(QIcon(":/Images/painter.png"));
+    ui->actionSave_color_palette->setIcon(QIcon(":/Images/painters.png"));
     tempqColor[7]=new QColor(0xE5,0x4E,0x3E,0xEF);
     tempqColor[6]=new QColor(0x89,0x41,0xE5,0xEF);
     tempqColor[5]=new QColor(0x3D,0xD1,0x8A,0xEF);
@@ -45,7 +60,6 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int i=0;i<8;i++){
         qColor[i]=*tempqColor[i];
     }
-
     transcolor();
     pagetmp=ui->webView->page();
     pagetmp->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -77,12 +91,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupBox->setVisible(false);
     ui->label->setVisible(false);
     ui->plainTextEdit->setVisible(false);
+    ui->action_Open->setShortcut(QKeySequence::Open);
+    ui->actionHelp_F1->setShortcut(QKeySequence(Qt::Key_F1));
+    ui->actionSave_as_S->setShortcut(QKeySequence::SaveAs);
+    ui->actionSave_Imgage_I->setShortcut(QKeySequence::Save);
 //    ui->groupBox->setMinimumWidth(0);
 //    ui->groupBox->setMaximumWidth(0);
     ui->pushButton_9->setDisabled(true);
     ui->pushButton_9->setVisible(false);
     ui->pushButton_10->setDisabled(true);
     ui->pushButton_10->setVisible(false);
+    ui->pushButton_11->setDisabled(true);
+    ui->pushButton_11->setVisible(false);
     ui->actionSave_as_S->setDisabled(true);
     ui->actionSave_Imgage_I->setDisabled(true);
     ui->actionSave_color_palette->setDisabled(true);
@@ -111,7 +131,7 @@ MainWindow::MainWindow(QWidget *parent) :
     List->append(zoom_out);
     List->append(zoom_in);
     List->append(reset);
-    List->append(save);
+//    List->append(save);
     List->append(seprator);
     List->append(nest);
     List->append(edwards);
@@ -124,6 +144,24 @@ MainWindow::MainWindow(QWidget *parent) :
     edwards->setDisabled(true);
     classic->setDisabled(true);
     ui->webView->addActions(*List);
+    Listtoolbar->append(ui->action_Open);
+    Listtoolbar->append(ui->actionSave_as_S);
+    Listtoolbar->append(ui->actionSave_Imgage_I);
+    Listtoolbar->append(seprator1);
+    Listtoolbar->append(ui->actionSave_color_palette);
+    Listtoolbar->append(ui->actionLoad_color_palette);
+    Listtoolbar->append(zoom_out);
+    Listtoolbar->append(zoom_in);
+    Listtoolbar->append(reset);
+    Listtoolbar->append(seprator);
+    Listtoolbar->append(nest);
+    Listtoolbar->append(edwards);
+    Listtoolbar->append(classic);
+    ui->menuSetting_S->addActions(*List);
+    ui->toolBar->setFixedHeight(30);
+    ui->toolBar->addActions(*Listtoolbar);
+    ui->toolBar->setIconSize(QSize(30,30));
+    ui->toolBar->adjustSize();
 
     //信号槽链接
     connect(ui->action_Open,SIGNAL(triggered()),this,SLOT(open()));
@@ -156,7 +194,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionHelp_F1,SIGNAL(triggered()),this,SLOT(help()));
 //    connect(ui->webView,SIGNAL(urlChanged(QUrl)),this,SLOT(singlecontent(QUrl)));
     connect(ui->pushButton_10,SIGNAL(clicked()),this,SLOT(exportunit()));
-    ui->webView->load(QUrl(QString("Sample_workflow.html")));
+    connect(ui->pushButton_11,SIGNAL(clicked()),this,SLOT(hidesharedListpanel()));
+    ui->webView->load(QUrl(Osprefixe+QString("Sample_workflow.html")));
     states=0;
 }
 
@@ -178,6 +217,8 @@ void MainWindow::singlecontent(QUrl url){
         ui->plainTextEdit->setVisible(true);
         ui->pushButton_10->setVisible(true);
         ui->pushButton_10->setDisabled(false);
+        ui->pushButton_11->setVisible(true);
+        ui->pushButton_11->setDisabled(false);
         ui->label->setToolTip(QString(major->outputstring[id].c_str()));
         ui->plainTextEdit->setToolTip("click 'Export shared list' button to export shared list");
     }
@@ -328,10 +369,10 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)//overwirte eventFilter
                      ui->webView->setCursor(*Zoom);
                  }else{if(keyEvent->matches(QKeySequence::Back))
                          return true;
-                     else if(keyEvent->key()==Qt::Key_F1){
-                         help();
-                         return true;
-                     }
+//                     else if(keyEvent->key()==Qt::Key_F1){
+//                         help();
+//                         return true;
+//                     }
                  }
              }
              else {
@@ -621,7 +662,7 @@ void MainWindow::Remove(){
     FILE * p=fopen((temppath+"/Linvenn_v.svg").toLocal8Bit(),"w");
     fclose(p);
     ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
-    ui->webView->load(QUrl(QString("Sample_workflow.html")));
+    ui->webView->load(QUrl(Osprefixe+QString("Sample_workflow.html")));
     ui->plainTextEdit->clear();
     //set very thing invisible
     for(int i=0;i<8;i++){
@@ -641,7 +682,9 @@ void MainWindow::Remove(){
     ui->pushButton_9->setVisible(false);
     ui->pushButton_10->setDisabled(true);
     ui->pushButton_10->setVisible(false);
-    ui->webView->load(QUrl(QString("Sample_workflow.html")));
+    ui->pushButton_11->setDisabled(true);
+    ui->pushButton_11->setVisible(false);
+    ui->webView->load(QUrl(Osprefixe+QString("Sample_workflow.html")));
     states=0;
 }
 
@@ -880,11 +923,22 @@ void MainWindow::help(){
                 ui->webView->load(QUrl(temppath+"/Linvenn_v.svg"));
             }
         }else{
-            ui->webView->load(QUrl(QString("Sample_workflow.html")));
+            ui->webView->load(QUrl(Osprefixe+QString("Sample_workflow.html")));
         }
     }
     else{
-        ui->webView->load(QUrl(QString("index.html")));
+        ui->webView->load(QUrl(Osprefixe+QString("index.html")));
     }
 
+}
+
+
+//hide shared k=list panel
+void MainWindow::hidesharedListpanel(){
+    ui->label->setVisible(false);
+    ui->plainTextEdit->setVisible(false);
+    ui->pushButton_10->setDisabled(true);
+    ui->pushButton_10->setVisible(false);
+    ui->pushButton_11->setDisabled(true);
+    ui->pushButton_11->setVisible(false);
 }
