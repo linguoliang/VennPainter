@@ -92,3 +92,11 @@ Moving mouse pointer over the number on the image, the tooltip will show the cor
 ##5. Other Operations
 ###5.1 Clear all data
 The data can be cleared by clicking the “Clear All” button. After clearing all data, other datasets can be loaded to construct a new Venn diagram.
+##6. Prebuilt binaries  
+[VennPainter_1.2.0.exe for windows](http://www.linguoliang1313.cn/blog/download/VennPainterinstaller_V1.2.0.exe)
+
+[VennPainter_v1.2.0.dmg for Mac OS](http://www.linguoliang1313.cn/blog/download/VennPainter_v1.2.0.dmg)
+
+[VennPainter_V1.2.0_x86.tar.gz for linux x86](http://www.linguoliang1313.cn/blog/download/VennPainter_V1.2.0_x86.tar.gz)
+
+[VennPainter_V1.2.0_x64.tar.gz for linux x64](http://www.linguoliang1313.cn/blog/download/VennPainter_V1.2.0_x64.tar.gz)
